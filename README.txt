@@ -1,5 +1,5 @@
 ╔═══════════════════════════════════════════════════════╗
-║        DateMe — Django Dating App with Auth                                ║
+║        DateMe — Django Dating App with Auth           ║
 ╚═══════════════════════════════════════════════════════╝
 
 ⚠️  DEMO PROJECT — All users, profiles, and data are
