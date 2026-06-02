@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Register — DateMe{% endblock %}
+{% block content %}
+<div class="container" style="max-width:480px">
+<div class="card">
+  <h2 style="text-align:center;font-size:1.6rem">Join DateMe 💕</h2>
+  <p style="text-align:center;color:#9090b0;margin-bottom:1.5rem;font-size:.88rem">Find your match. Must be 18+.</p>
+  <form method="post">
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="form-group">
+      <label>{{ field.label }}</label>
+      {{ field }}
+      {% if field.help_text %}<p class="helptext">{{ field.help_text }}</p>{% endif %}
+      {% for e in field.errors %}<p class="field-error">⚠ {{ e }}</p>{% endfor %}
+    </div>
+    {% endfor %}
+
+    <div class="form-group">
+      <label>Human Verification</label>
+      <div style="display:flex;gap:.8rem;align-items:center;margin-bottom:.6rem">
+        <img id="captcha-img" src="{{ captcha_img }}" style="border-radius:8px;border:1px solid #2a2a4a" alt="CAPTCHA">
+        <button type="button" onclick="refreshCaptcha()" class="btn btn-secondary btn-sm">🔄 Refresh</button>
+      </div>
+      <input type="text" name="captcha_answer" placeholder="Enter the text above" autocomplete="off" required>
+    </div>
+
+    <div style="margin-bottom:1rem;font-size:.8rem;color:#6060a0;padding:.8rem;background:#0f0f1a;border-radius:8px;border:1px solid #2a2a4a">
+      By registering, you agree to our Terms of Service and confirm you are at least 18 years old.
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="width:100%">Create Account</button>
+  </form>
+  <p style="text-align:center;margin-top:1.2rem;color:#9090b0;font-size:.88rem">
+    Already have an account? <a class="link" href="{% url 'login' %}">Login</a>
+  </p>
+</div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+function refreshCaptcha(){
+  fetch("{% url 'refresh_captcha' %}")
+    .then(r=>r.json())
+    .then(d=>{ document.getElementById('captcha-img').src = d.captcha_img; });
+}
+</script>
+{% endblock %}

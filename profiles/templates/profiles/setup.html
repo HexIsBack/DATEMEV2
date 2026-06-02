@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Setup Profile{% endblock %}
+{% block content %}
+<div class="container" style="max-width:520px">
+<div class="card">
+  <h2>Complete Your Profile ✨</h2>
+  <p style="color:#9090b0;margin-bottom:1.5rem;font-size:.88rem">Help others get to know you better</p>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="form-group">
+      <label>{{ field.label }}</label>
+      {{ field }}
+      {% if field.help_text %}<p class="helptext">{{ field.help_text }}</p>{% endif %}
+      {% for e in field.errors %}<p class="field-error">⚠ {{ e }}</p>{% endfor %}
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary" style="width:100%">Save Profile & Start Swiping 💕</button>
+  </form>
+</div>
+</div>
+{% endblock %}

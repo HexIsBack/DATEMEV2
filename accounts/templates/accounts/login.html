@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Login — DateMe{% endblock %}
+{% block content %}
+<div class="container" style="max-width:420px">
+<div class="card" style="text-align:center">
+  <div style="font-size:3rem;margin-bottom:.5rem">💕</div>
+  <h2 style="font-size:1.6rem;margin-bottom:.3rem">Welcome Back</h2>
+  <p style="color:#9090b0;margin-bottom:1.5rem;font-size:.88rem">Sign in to your DateMe account</p>
+  <form method="post" style="text-align:left">
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="form-group">
+      <label>{{ field.label }}</label>
+      {{ field }}
+      {% for e in field.errors %}<p class="field-error">⚠ {{ e }}</p>{% endfor %}
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary" style="width:100%;margin-top:.5rem">Login</button>
+  </form>
+  <p style="margin-top:1.2rem;color:#9090b0;font-size:.88rem">
+    No account? <a class="link" href="{% url 'register' %}">Register here</a>
+  </p>
+</div>
+</div>
+{% endblock %}

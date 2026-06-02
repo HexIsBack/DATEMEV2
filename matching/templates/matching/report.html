@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Report User{% endblock %}
+{% block content %}
+<div class="container" style="max-width:460px">
+<div class="card">
+  <h2>🚩 Report {{ reported.username }}</h2>
+  <p style="color:#9090b0;font-size:.85rem;margin-bottom:1.5rem">Help keep DateMe safe. False reports may result in action against your account.</p>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}">
+    <div class="form-group">
+      <label>Reason</label>
+      {% for val, label in reasons %}
+      <label style="display:flex;align-items:center;gap:.7rem;padding:.7rem 1rem;background:#0f0f1a;border:1.5px solid #2a2a4a;border-radius:10px;margin-bottom:.5rem;cursor:pointer">
+        <input type="radio" name="reason" value="{{ val }}" style="width:auto;margin:0" required>
+        {{ label }}
+      </label>
+      {% endfor %}
+    </div>
+    <div class="form-group">
+      <label>Additional Details (optional)</label>
+      <textarea name="details" rows="3" placeholder="Describe what happened..."></textarea>
+    </div>
+    <div style="display:flex;gap:.7rem">
+      <button type="submit" class="btn btn-danger">Submit Report</button>
+      <a href="{{ next }}" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+</div>
+{% endblock %}

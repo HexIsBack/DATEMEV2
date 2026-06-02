@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+<div class="container" style="max-width:480px">
+<div class="card" style="text-align:center">
+  {% with photo_url=profile.get_photo_url %}
+  {% if photo_url %}
+  <img src="{{ photo_url }}" style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid #ff6b6b;margin-bottom:1rem">
+  {% else %}
+  <div style="width:120px;height:120px;border-radius:50%;background:#2a2a4a;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;font-size:3rem">👤</div>
+  {% endif %}
+  {% endwith %}
+  <h2>{{ user.username }}</h2>
+  {% if profile.age %}<p style="color:#ff6b6b;font-weight:600">{{ profile.age }} years old</p>{% endif %}
+  {% if profile.location %}<p style="color:#9090b0;margin:.4rem 0">📍 {{ profile.location }}</p>{% endif %}
+  {% if profile.bio %}<p style="margin:1rem 0;line-height:1.6;color:#c0c0d0">{{ profile.bio }}</p>{% endif %}
+  <a href="{% url 'profile_setup' %}" class="btn btn-secondary btn-sm" style="margin-top:1rem">Edit Profile</a>
+</div>
+</div>
+{% endblock %}

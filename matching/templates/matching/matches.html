@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Matches — DateMe{% endblock %}
+{% block content %}
+<div class="container">
+  <h2>Your Matches 💕 <span style="color:#9090b0;font-size:1rem">({{ match_list|length }})</span></h2>
+  {% if match_list %}
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-top:1.5rem">
+    {% for item in match_list %}
+    {% with photo_url=item.other.profile.get_photo_url %}
+    <div class="card" style="text-align:center;padding:1.5rem 1rem;position:relative">
+      {% if item.other.is_online %}
+      <span style="position:absolute;top:12px;right:12px;width:10px;height:10px;background:#2ed573;border-radius:50%;border:2px solid #1a1a2e"></span>
+      {% endif %}
+      {% if photo_url %}
+        <img src="{{ photo_url }}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid #ff6b6b;margin-bottom:.8rem">
+      {% else %}
+        <div style="width:80px;height:80px;border-radius:50%;background:#2a2a4a;display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto .8rem">👤</div>
+      {% endif %}
+      <div style="font-weight:700;margin-bottom:.2rem">{{ item.other.username }}</div>
+      {% if item.other.profile.age %}<div style="color:#ff6b6b;font-size:.82rem">{{ item.other.profile.age }} yrs</div>{% endif %}
+      {% if item.other.profile.location %}<div style="color:#9090b0;font-size:.78rem;margin:.3rem 0">📍 {{ item.other.profile.location }}</div>{% endif %}
+      <a href="{% url 'chat' item.other.id %}" class="btn btn-primary btn-sm" style="margin-top:.8rem;display:inline-block">💬 Chat</a>
+    </div>
+    {% endwith %}
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:4rem 2rem;color:#9090b0">
+    <div style="font-size:3rem;margin-bottom:1rem">💔</div>
+    <p style="margin-bottom:1.5rem">No matches yet. Keep swiping!</p>
+    <a href="{% url 'swipe' %}" class="btn btn-primary">Start Swiping</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

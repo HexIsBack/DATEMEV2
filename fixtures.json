@@ -1,0 +1,459 @@
+[
+  {
+    "model": "accounts.customuser",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$DYAppIadbBy2dzStDt813o$U6xFBUlt4BsWCAKQSutMoPWK4BTsgfZrkvX29YmGd/I=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "sakura_ph",
+      "first_name": "Sakura",
+      "last_name": "Reyes",
+      "email": "sakura@demo.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-05-01T08:00:00Z",
+      "is_blocked": false,
+      "block_reason": "",
+      "last_seen": "2026-06-01T10:00:00Z",
+      "email_verified": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "accounts.customuser",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$DYAppIadbBy2dzStDt813o$U6xFBUlt4BsWCAKQSutMoPWK4BTsgfZrkvX29YmGd/I=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "juan_dela",
+      "first_name": "Juan",
+      "last_name": "dela Cruz",
+      "email": "juan@demo.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-05-01T08:00:00Z",
+      "is_blocked": false,
+      "block_reason": "",
+      "last_seen": "2026-06-01T10:00:00Z",
+      "email_verified": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "accounts.customuser",
+    "pk": 4,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$DYAppIadbBy2dzStDt813o$U6xFBUlt4BsWCAKQSutMoPWK4BTsgfZrkvX29YmGd/I=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "mia_santos",
+      "first_name": "Mia",
+      "last_name": "Santos",
+      "email": "mia@demo.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-05-01T08:00:00Z",
+      "is_blocked": false,
+      "block_reason": "",
+      "last_seen": "2026-06-01T10:00:00Z",
+      "email_verified": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "accounts.customuser",
+    "pk": 5,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$DYAppIadbBy2dzStDt813o$U6xFBUlt4BsWCAKQSutMoPWK4BTsgfZrkvX29YmGd/I=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "carlo_v",
+      "first_name": "Carlo",
+      "last_name": "Villanueva",
+      "email": "carlo@demo.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-05-01T08:00:00Z",
+      "is_blocked": false,
+      "block_reason": "",
+      "last_seen": "2026-06-01T10:00:00Z",
+      "email_verified": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "accounts.customuser",
+    "pk": 6,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$DYAppIadbBy2dzStDt813o$U6xFBUlt4BsWCAKQSutMoPWK4BTsgfZrkvX29YmGd/I=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "ana_lim",
+      "first_name": "Ana",
+      "last_name": "Lim",
+      "email": "ana@demo.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-05-01T08:00:00Z",
+      "is_blocked": false,
+      "block_reason": "",
+      "last_seen": "2026-06-01T10:00:00Z",
+      "email_verified": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "accounts.customuser",
+    "pk": 7,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$DYAppIadbBy2dzStDt813o$U6xFBUlt4BsWCAKQSutMoPWK4BTsgfZrkvX29YmGd/I=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "marco_t",
+      "first_name": "Marco",
+      "last_name": "Torres",
+      "email": "marco@demo.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-05-01T08:00:00Z",
+      "is_blocked": false,
+      "block_reason": "",
+      "last_seen": "2026-06-01T10:00:00Z",
+      "email_verified": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "accounts.customuser",
+    "pk": 8,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$DYAppIadbBy2dzStDt813o$U6xFBUlt4BsWCAKQSutMoPWK4BTsgfZrkvX29YmGd/I=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "lily_cruz",
+      "first_name": "Lily",
+      "last_name": "Cruz",
+      "email": "lily@demo.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-05-01T08:00:00Z",
+      "is_blocked": false,
+      "block_reason": "",
+      "last_seen": "2026-06-01T10:00:00Z",
+      "email_verified": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "accounts.customuser",
+    "pk": 9,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$DYAppIadbBy2dzStDt813o$U6xFBUlt4BsWCAKQSutMoPWK4BTsgfZrkvX29YmGd/I=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "ryan_go",
+      "first_name": "Ryan",
+      "last_name": "Go",
+      "email": "ryan@demo.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-05-01T08:00:00Z",
+      "is_blocked": false,
+      "block_reason": "",
+      "last_seen": "2026-06-01T10:00:00Z",
+      "email_verified": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "accounts.customuser",
+    "pk": 10,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$DYAppIadbBy2dzStDt813o$U6xFBUlt4BsWCAKQSutMoPWK4BTsgfZrkvX29YmGd/I=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "nina_b",
+      "first_name": "Nina",
+      "last_name": "Bautista",
+      "email": "nina@demo.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-05-01T08:00:00Z",
+      "is_blocked": false,
+      "block_reason": "",
+      "last_seen": "2026-06-01T10:00:00Z",
+      "email_verified": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "accounts.customuser",
+    "pk": 11,
+    "fields": {
+      "password": "pbkdf2_sha256$1200000$DYAppIadbBy2dzStDt813o$U6xFBUlt4BsWCAKQSutMoPWK4BTsgfZrkvX29YmGd/I=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "alex_m",
+      "first_name": "Alex",
+      "last_name": "Mendoza",
+      "email": "alex@demo.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2026-05-01T08:00:00Z",
+      "is_blocked": false,
+      "block_reason": "",
+      "last_seen": "2026-06-01T10:00:00Z",
+      "email_verified": false,
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "profiles.profile",
+    "pk": 1,
+    "fields": {
+      "user": 2,
+      "birth_date": "1998-03-14",
+      "gender": "F",
+      "interested_in": "M",
+      "bio": "Coffee addict \u2615 | Loves hiking and sunsets | Looking for someone genuine",
+      "location": "Quezon City, PH",
+      "is_complete": true
+    }
+  },
+  {
+    "model": "profiles.profile",
+    "pk": 2,
+    "fields": {
+      "user": 3,
+      "birth_date": "1996-07-22",
+      "gender": "M",
+      "interested_in": "F",
+      "bio": "Software dev by day, guitarist by night \ud83c\udfb8 | Let's grab milk tea sometime",
+      "location": "Makati, PH",
+      "is_complete": true
+    }
+  },
+  {
+    "model": "profiles.profile",
+    "pk": 3,
+    "fields": {
+      "user": 4,
+      "birth_date": "1999-11-05",
+      "gender": "F",
+      "interested_in": "M",
+      "bio": "Nurse \ud83d\udc89 | Food lover | Currently obsessed with k-dramas | Swipe right if you're kind",
+      "location": "Pasig, PH",
+      "is_complete": true
+    }
+  },
+  {
+    "model": "profiles.profile",
+    "pk": 4,
+    "fields": {
+      "user": 5,
+      "birth_date": "1995-01-30",
+      "gender": "M",
+      "interested_in": "F",
+      "bio": "Architect \ud83c\udfd7\ufe0f | Traveler | Been to 12 countries | Looking for my travel buddy",
+      "location": "BGC, Taguig, PH",
+      "is_complete": true
+    }
+  },
+  {
+    "model": "profiles.profile",
+    "pk": 5,
+    "fields": {
+      "user": 6,
+      "birth_date": "2000-06-18",
+      "gender": "F",
+      "interested_in": "A",
+      "bio": "Art student \ud83c\udfa8 | Cat mom x2 | Into indie music and gallery dates",
+      "location": "Mandaluyong, PH",
+      "is_complete": true
+    }
+  },
+  {
+    "model": "profiles.profile",
+    "pk": 6,
+    "fields": {
+      "user": 7,
+      "birth_date": "1997-09-03",
+      "gender": "M",
+      "interested_in": "F",
+      "bio": "Chef \ud83d\udc68\u200d\ud83c\udf73 | Will cook for you on the 3rd date | Basketball and cooking are my life",
+      "location": "Marikina, PH",
+      "is_complete": true
+    }
+  },
+  {
+    "model": "profiles.profile",
+    "pk": 7,
+    "fields": {
+      "user": 8,
+      "birth_date": "1998-12-25",
+      "gender": "F",
+      "interested_in": "M",
+      "bio": "Born on Christmas \ud83c\udf84 | Teacher | Dog lover \ud83d\udc36 | Looking for something real",
+      "location": "Paranaque, PH",
+      "is_complete": true
+    }
+  },
+  {
+    "model": "profiles.profile",
+    "pk": 8,
+    "fields": {
+      "user": 9,
+      "birth_date": "1994-04-11",
+      "gender": "M",
+      "interested_in": "F",
+      "bio": "Fitness coach \ud83d\udcaa | Morning person | Let's go on sunrise hikes",
+      "location": "Las Pinas, PH",
+      "is_complete": true
+    }
+  },
+  {
+    "model": "profiles.profile",
+    "pk": 9,
+    "fields": {
+      "user": 10,
+      "birth_date": "2001-08-27",
+      "gender": "F",
+      "interested_in": "M",
+      "bio": "Fresh grad \ud83c\udf93 | Marketing | Loves thrift shopping and street food",
+      "location": "Caloocan, PH",
+      "is_complete": true
+    }
+  },
+  {
+    "model": "profiles.profile",
+    "pk": 10,
+    "fields": {
+      "user": 11,
+      "birth_date": "1993-02-14",
+      "gender": "M",
+      "interested_in": "F",
+      "bio": "Valentine's baby \ud83d\udc9d | Accountant | Loves board games and coffee shop hopping",
+      "location": "Muntinlupa, PH",
+      "is_complete": true
+    }
+  },
+  {
+    "model": "matching.swipe",
+    "pk": 1,
+    "fields": {
+      "swiper": 5,
+      "swiped_on": 2,
+      "direction": "like",
+      "created": "2026-06-01T09:00:00Z"
+    }
+  },
+  {
+    "model": "matching.swipe",
+    "pk": 2,
+    "fields": {
+      "swiper": 2,
+      "swiped_on": 5,
+      "direction": "like",
+      "created": "2026-06-01T09:00:00Z"
+    }
+  },
+  {
+    "model": "matching.swipe",
+    "pk": 3,
+    "fields": {
+      "swiper": 3,
+      "swiped_on": 4,
+      "direction": "like",
+      "created": "2026-06-01T09:00:00Z"
+    }
+  },
+  {
+    "model": "matching.swipe",
+    "pk": 4,
+    "fields": {
+      "swiper": 4,
+      "swiped_on": 3,
+      "direction": "like",
+      "created": "2026-06-01T09:00:00Z"
+    }
+  },
+  {
+    "model": "matching.swipe",
+    "pk": 5,
+    "fields": {
+      "swiper": 7,
+      "swiped_on": 8,
+      "direction": "like",
+      "created": "2026-06-01T09:00:00Z"
+    }
+  },
+  {
+    "model": "matching.swipe",
+    "pk": 6,
+    "fields": {
+      "swiper": 8,
+      "swiped_on": 7,
+      "direction": "like",
+      "created": "2026-06-01T09:00:00Z"
+    }
+  },
+  {
+    "model": "matching.swipe",
+    "pk": 7,
+    "fields": {
+      "swiper": 9,
+      "swiped_on": 10,
+      "direction": "like",
+      "created": "2026-06-01T09:00:00Z"
+    }
+  },
+  {
+    "model": "matching.swipe",
+    "pk": 8,
+    "fields": {
+      "swiper": 11,
+      "swiped_on": 6,
+      "direction": "pass",
+      "created": "2026-06-01T09:00:00Z"
+    }
+  },
+  {
+    "model": "matching.match",
+    "pk": 1,
+    "fields": {
+      "user1": 5,
+      "user2": 2,
+      "created": "2026-06-01T09:30:00Z"
+    }
+  },
+  {
+    "model": "matching.match",
+    "pk": 2,
+    "fields": {
+      "user1": 3,
+      "user2": 4,
+      "created": "2026-06-01T09:30:00Z"
+    }
+  },
+  {
+    "model": "matching.match",
+    "pk": 3,
+    "fields": {
+      "user1": 7,
+      "user2": 8,
+      "created": "2026-06-01T09:30:00Z"
+    }
+  }
+]

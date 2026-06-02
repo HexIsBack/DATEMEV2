@@ -1,0 +1,123 @@
+[
+  {
+    "model": "chat.message",
+    "pk": 1,
+    "fields": {
+      "sender": 5,
+      "receiver": 2,
+      "body": "Hey Sakura! I saw you like hiking too \ud83d\ude0a",
+      "timestamp": "2026-06-01T10:00:00Z",
+      "is_read": true
+    }
+  },
+  {
+    "model": "chat.message",
+    "pk": 2,
+    "fields": {
+      "sender": 2,
+      "receiver": 5,
+      "body": "Yes! I usually go to Mt. Batulao on weekends. You?",
+      "timestamp": "2026-06-01T10:02:00Z",
+      "is_read": true
+    }
+  },
+  {
+    "model": "chat.message",
+    "pk": 3,
+    "fields": {
+      "sender": 5,
+      "receiver": 2,
+      "body": "Same! Maybe we can hike together sometime \ud83c\udfd4\ufe0f",
+      "timestamp": "2026-06-01T10:05:00Z",
+      "is_read": true
+    }
+  },
+  {
+    "model": "chat.message",
+    "pk": 4,
+    "fields": {
+      "sender": 2,
+      "receiver": 5,
+      "body": "That sounds fun! This Saturday?",
+      "timestamp": "2026-06-01T10:06:00Z",
+      "is_read": false
+    }
+  },
+  {
+    "model": "chat.message",
+    "pk": 5,
+    "fields": {
+      "sender": 3,
+      "receiver": 4,
+      "body": "Hi Mia! Fellow food lover here \ud83c\udf5c",
+      "timestamp": "2026-06-01T11:00:00Z",
+      "is_read": true
+    }
+  },
+  {
+    "model": "chat.message",
+    "pk": 6,
+    "fields": {
+      "sender": 4,
+      "receiver": 3,
+      "body": "Haha yes! Have you tried the new ramen place in BGC?",
+      "timestamp": "2026-06-01T11:03:00Z",
+      "is_read": true
+    }
+  },
+  {
+    "model": "chat.message",
+    "pk": 7,
+    "fields": {
+      "sender": 3,
+      "receiver": 4,
+      "body": "Not yet! Want to check it out together?",
+      "timestamp": "2026-06-01T11:05:00Z",
+      "is_read": true
+    }
+  },
+  {
+    "model": "chat.message",
+    "pk": 8,
+    "fields": {
+      "sender": 4,
+      "receiver": 3,
+      "body": "Sure! How about Friday after my shift? \ud83d\ude0a",
+      "timestamp": "2026-06-01T11:07:00Z",
+      "is_read": false
+    }
+  },
+  {
+    "model": "chat.message",
+    "pk": 9,
+    "fields": {
+      "sender": 7,
+      "receiver": 8,
+      "body": "Hi Lily! I actually cook Filipino-Italian fusion \ud83c\udf5d",
+      "timestamp": "2026-06-01T12:00:00Z",
+      "is_read": true
+    }
+  },
+  {
+    "model": "chat.message",
+    "pk": 10,
+    "fields": {
+      "sender": 8,
+      "receiver": 7,
+      "body": "That sounds amazing! I love both cuisines",
+      "timestamp": "2026-06-01T12:02:00Z",
+      "is_read": true
+    }
+  },
+  {
+    "model": "chat.message",
+    "pk": 11,
+    "fields": {
+      "sender": 7,
+      "receiver": 8,
+      "body": "I can cook for you someday \ud83d\ude04",
+      "timestamp": "2026-06-01T12:04:00Z",
+      "is_read": false
+    }
+  }
+]

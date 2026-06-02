@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% block title %}Discover — DateMe{% endblock %}
+{% block extra_css %}
+<style>
+.swipe-area{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 56px);padding:1rem}
+.card-stack{position:relative;width:340px;height:490px}
+.profile-card{position:absolute;width:100%;height:100%;border-radius:20px;overflow:hidden;background:#1a1a2e;border:1px solid #2a2a4a;box-shadow:0 8px 40px rgba(0,0,0,.5);cursor:grab;user-select:none}
+.profile-card:active{cursor:grabbing}
+.card-photo{width:100%;height:340px;object-fit:cover;background:#2a2a4a;display:flex;align-items:center;justify-content:center;font-size:5rem}
+.card-info{padding:.8rem 1.2rem}
+.card-name{font-size:1.3rem;font-weight:700}
+.card-meta{color:#9090b0;font-size:.85rem;margin-top:.2rem}
+.card-bio{font-size:.82rem;color:#c0c0d0;margin-top:.4rem;line-height:1.5;max-height:48px;overflow:hidden}
+.card-footer{display:flex;justify-content:flex-end;padding:.3rem 1.2rem .6rem}
+.action-btns{display:flex;gap:1.5rem;margin-top:1.2rem;justify-content:center}
+.action-btn{width:64px;height:64px;border-radius:50%;border:none;font-size:1.6rem;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.3);transition:transform .15s}
+.action-btn:hover{transform:scale(1.1)}
+.btn-pass{background:#1a1a2e;border:2px solid #ff6b6b}
+.btn-like{background:linear-gradient(135deg,#ff6b6b,#ee5a24)}
+.indicator{position:absolute;top:20px;font-size:1.8rem;font-weight:900;opacity:0;transition:opacity .2s;padding:6px 14px;border-radius:8px;border:3px solid}
+.indicator-like{left:20px;color:#2ed573;border-color:#2ed573;transform:rotate(-15deg)}
+.indicator-pass{right:20px;color:#ff6b6b;border-color:#ff6b6b;transform:rotate(15deg)}
+.no-more{text-align:center;padding:3rem 2rem}
+.match-popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:999;align-items:center;justify-content:center}
+.match-popup.show{display:flex}
+.match-content{text-align:center;animation:popIn .4s ease}
+@keyframes popIn{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+.match-title{font-size:2.5rem;font-weight:900;background:linear-gradient(135deg,#ff6b6b,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem}
+.btn-report-card{background:transparent;border:none;color:#6060a0;font-size:.72rem;cursor:pointer;padding:2px 6px;border-radius:4px}
+.btn-report-card:hover{color:#ff6b6b;background:#2a1a1a}
+</style>
+{% endblock %}
+{% block content %}
+<div class="swipe-area">
+{% if candidate %}
+  {% with photo_url=candidate.profile.get_photo_url %}
+  <div class="card-stack">
+    <div class="profile-card" id="profileCard" data-id="{{ candidate.id }}">
+      <div class="indicator indicator-like" id="likeInd">LIKE 💚</div>
+      <div class="indicator indicator-pass" id="passInd">PASS 👋</div>
+      {% if photo_url %}
+        <img src="{{ photo_url }}" class="card-photo">
+      {% else %}
+        <div class="card-photo">👤</div>
+      {% endif %}
+      <div class="card-info">
+        <div class="card-name">
+          {{ candidate.username }}
+          {% if candidate.is_online %}<span style="font-size:.68rem;background:#1a3a2a;color:#2ed573;padding:2px 7px;border-radius:99px;vertical-align:middle">● Online</span>{% endif %}
+        </div>
+        <div class="card-meta">
+          {% if candidate.profile.age %}{{ candidate.profile.age }} yrs{% endif %}
+          {% if candidate.profile.location %} · 📍 {{ candidate.profile.location }}{% endif %}
+        </div>
+        {% if candidate.profile.bio %}<div class="card-bio">{{ candidate.profile.bio }}</div>{% endif %}
+      </div>
+      <div class="card-footer">
+        <a href="{% url 'report_user' candidate.id %}?next=/match/swipe/" class="btn-report-card">🚩 Report</a>
+      </div>
+    </div>
+  </div>
+  {% endwith %}
+  <div class="action-btns">
+    <button class="action-btn btn-pass" onclick="swipe('pass')" title="Pass">👋</button>
+    <button class="action-btn btn-like" onclick="swipe('like')" title="Like">❤️</button>
+  </div>
+{% else %}
+  <div class="no-more card" style="width:340px;text-align:center;padding:3rem 2rem">
+    <div style="font-size:3.5rem;margin-bottom:1rem">🎉</div>
+    <h2>You've seen everyone!</h2>
+    <p style="color:#9090b0;margin:1rem 0">Check back later for new people</p>
+    <a href="{% url 'matches' %}" class="btn btn-primary">See Your Matches</a>
+  </div>
+{% endif %}
+</div>
+
+<div class="match-popup" id="matchPopup">
+  <div class="match-content">
+    <div style="font-size:4rem;margin-bottom:.5rem">🎉</div>
+    <div class="match-title">It's a Match!</div>
+    <p style="color:#c0c0d0;margin-bottom:2rem">You both liked each other!</p>
+    <div style="display:flex;gap:1rem;justify-content:center">
+      <a href="{% url 'matches' %}" class="btn btn-primary">Chat Now 💬</a>
+      <button onclick="document.getElementById('matchPopup').classList.remove('show');location.reload()" class="btn btn-secondary">Keep Swiping</button>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+const card = document.getElementById('profileCard');
+if(card){
+  let startX=0,curX=0,dragging=false;
+  const likeInd=document.getElementById('likeInd');
+  const passInd=document.getElementById('passInd');
+  card.addEventListener('mousedown',e=>{dragging=true;startX=e.clientX;});
+  document.addEventListener('mousemove',e=>{
+    if(!dragging)return;
+    curX=e.clientX-startX;
+    card.style.transform=`translateX(${curX}px) rotate(${curX*0.05}deg)`;
+    likeInd.style.opacity=curX>30?Math.min((curX-30)/80,1):0;
+    passInd.style.opacity=curX<-30?Math.min((-curX-30)/80,1):0;
+  });
+  document.addEventListener('mouseup',()=>{
+    if(!dragging)return;
+    dragging=false;
+    if(curX>80)swipe('like');
+    else if(curX<-80)swipe('pass');
+    else{card.style.transform='';likeInd.style.opacity=0;passInd.style.opacity=0;}
+    curX=0;
+  });
+  card.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;dragging=true;});
+  card.addEventListener('touchmove',e=>{
+    if(!dragging)return;
+    curX=e.touches[0].clientX-startX;
+    card.style.transform=`translateX(${curX}px) rotate(${curX*0.05}deg)`;
+    likeInd.style.opacity=curX>30?Math.min((curX-30)/80,1):0;
+    passInd.style.opacity=curX<-30?Math.min((-curX-30)/80,1):0;
+  });
+  card.addEventListener('touchend',()=>{
+    dragging=false;
+    if(curX>80)swipe('like');
+    else if(curX<-80)swipe('pass');
+    else{card.style.transform='';likeInd.style.opacity=0;passInd.style.opacity=0;}
+    curX=0;
+  });
+}
+function swipe(dir){
+  const card=document.getElementById('profileCard');
+  if(!card)return;
+  const id=card.dataset.id;
+  const fly=dir==='like'?600:-600;
+  card.style.transition='transform .4s ease';
+  card.style.transform=`translateX(${fly}px) rotate(${fly*0.05}deg)`;
+  fetch("{% url 'do_swipe' %}",{
+    method:'POST',
+    headers:{'Content-Type':'application/json','X-CSRFToken':'{{ csrf_token }}'},
+    body:JSON.stringify({target_id:id,direction:dir})
+  }).then(r=>r.json()).then(d=>{
+    if(d.matched){document.getElementById('matchPopup').classList.add('show');}
+    else{setTimeout(()=>location.reload(),400);}
+  });
+}
+</script>
+{% endblock %}
