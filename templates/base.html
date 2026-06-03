@@ -23,10 +23,10 @@
     {% if user.is_online %}<span class="online-dot"></span>{% endif %}
 
     {% if user.is_staff %}
-      {{-- Admin users: only Admin link + Logout --}}
+      {# Admin users: only Admin link + Logout #}
       <a href="{% url 'custom_admin' %}" style="color:#ffd700">🛡️ Admin</a>
     {% else %}
-      {{-- Regular users: full nav --}}
+      {# Regular users: full nav #}
       <a href="{% url 'swipe' %}">Discover</a>
       <a href="{% url 'matches' %}">Matches</a>
       <a href="{% url 'my_profile' %}">Profile</a>
