@@ -5,55 +5,98 @@
 
 /* ── CSS Variables ───────────────────────────────────────── */
 :root {
-  /* Dark theme (default) */
-  --bg-body:       #0f0f1a;
-  --bg-card:       #1a1a2e;
-  --bg-input:      #0f0f1a;
-  --bg-nav:        linear-gradient(135deg, #ff6b6b, #ee5a24);
-  --bg-btn-sec:    #2a2a4a;
-  --border-color:  #2a2a4a;
-  --text-primary:  #f0f0f5;
-  --text-muted:    #9090b0;
-  --text-dimmer:   #6060a0;
-  --text-nav:      rgba(255,255,255,.85);
-  --text-nav-full: #fff;
-  --shadow-nav:    0 2px 20px rgba(255,107,107,.3);
-  --msg-success-bg:    #1a3a2a;
-  --msg-success-color: #2ed573;
-  --msg-success-bdr:   #2ed57340;
-  --msg-error-bg:      #3a1a1a;
-  --msg-error-color:   #ff6b6b;
-  --msg-error-bdr:     #ff6b6b40;
-  --msg-info-bg:       #1a2a3a;
-  --msg-info-color:    #74b9ff;
-  --msg-info-bdr:      #74b9ff40;
-  --input-focus-bdr:   #ff6b6b;
-  --transition-theme:  background .25s, color .25s, border-color .25s;
+  /* ── Core palette (dark default) ── */
+  --bg-body:             #0f0f1a;
+  --bg-card:             #1a1a2e;
+  --bg-input:            #0f0f1a;
+  --bg-nav:              linear-gradient(135deg, #ff6b6b, #ee5a24);
+  --bg-btn-sec:          #2a2a4a;
+  --border-color:        #2a2a4a;
+  --text-primary:        #f0f0f5;
+  --text-muted:          #9090b0;
+  --text-dimmer:         #6060a0;
+  --text-nav:            rgba(255,255,255,.85);
+  --text-nav-full:       #fff;
+  --shadow-nav:          0 2px 20px rgba(255,107,107,.3);
+  --input-focus-bdr:     #ff6b6b;
+  --transition-theme:    background .25s, color .25s, border-color .25s;
+
+  /* ── Flash messages ── */
+  --msg-success-bg:      #1a3a2a;
+  --msg-success-color:   #2ed573;
+  --msg-success-bdr:     #2ed57340;
+  --msg-error-bg:        #3a1a1a;
+  --msg-error-color:     #ff6b6b;
+  --msg-error-bdr:       #ff6b6b40;
+  --msg-info-bg:         #1a2a3a;
+  --msg-info-color:      #74b9ff;
+  --msg-info-bdr:        #74b9ff40;
+
+  /* ── Chat / Sidebar (matches_chat page) ── */
+  --bg-sidebar:          #111122;
+  --bg-chat-panel:       #0f0f1a;
+  --bg-chat-header:      #111122;
+  --bg-chat-input-bar:   #111122;
+  --bg-msg-input:        #0f0f1a;
+  --border-chat:         #2a2a4a;
+  --msg-theirs-bg:       #2a2a4a;
+  --msg-theirs-color:    #f0f0f5;
+  --match-item-hover:    #1a1a2e;
+  --match-item-active:   #1e1e3a;
+  --modal-box-bg:        #1a1a2e;
+  --modal-overlay:       rgba(0,0,0,.7);
+  --reason-btn-bg:       #0f0f1a;
+  --reason-btn-sel-bg:   #1a1020;
+  --avatar-placeholder:  #2a2a4a;
+  --online-ring-border:  #111122;
+  --sidebar-text:        #f0f0f5;
 }
 
 [data-theme="light"] {
-  --bg-body:       #f5f5f8;
-  --bg-card:       #ffffff;
-  --bg-input:      #f0f0f4;
-  --bg-nav:        linear-gradient(135deg, #ff6b6b, #ee5a24);
-  --bg-btn-sec:    #e8e8f0;
-  --border-color:  #d8d8e8;
-  --text-primary:  #1a1a2e;
-  --text-muted:    #5a5a7a;
-  --text-dimmer:   #8080a0;
-  --text-nav:      rgba(255,255,255,.9);
-  --text-nav-full: #fff;
-  --shadow-nav:    0 2px 20px rgba(255,107,107,.25);
-  --msg-success-bg:    #d4f5e4;
-  --msg-success-color: #1a7a40;
-  --msg-success-bdr:   #2ed57350;
-  --msg-error-bg:      #fde8e8;
-  --msg-error-color:   #c0392b;
-  --msg-error-bdr:     #ff6b6b50;
-  --msg-info-bg:       #e3f0ff;
-  --msg-info-color:    #1a5fa0;
-  --msg-info-bdr:      #74b9ff50;
-  --input-focus-bdr:   #ee5a24;
+  /* ── Core palette (light) ── */
+  --bg-body:             #f5f5f8;
+  --bg-card:             #ffffff;
+  --bg-input:            #f0f0f4;
+  --bg-nav:              linear-gradient(135deg, #ff6b6b, #ee5a24);
+  --bg-btn-sec:          #e8e8f0;
+  --border-color:        #d8d8e8;
+  --text-primary:        #1a1a2e;
+  --text-muted:          #5a5a7a;
+  --text-dimmer:         #8080a0;
+  --text-nav:            rgba(255,255,255,.9);
+  --text-nav-full:       #fff;
+  --shadow-nav:          0 2px 20px rgba(255,107,107,.25);
+  --input-focus-bdr:     #ee5a24;
+
+  /* ── Flash messages ── */
+  --msg-success-bg:      #d4f5e4;
+  --msg-success-color:   #1a7a40;
+  --msg-success-bdr:     #2ed57350;
+  --msg-error-bg:        #fde8e8;
+  --msg-error-color:     #c0392b;
+  --msg-error-bdr:       #ff6b6b50;
+  --msg-info-bg:         #e3f0ff;
+  --msg-info-color:      #1a5fa0;
+  --msg-info-bdr:        #74b9ff50;
+
+  /* ── Chat / Sidebar ── */
+  --bg-sidebar:          #ededf5;
+  --bg-chat-panel:       #ffffff;
+  --bg-chat-header:      #ededf5;
+  --bg-chat-input-bar:   #ededf5;
+  --bg-msg-input:        #ffffff;
+  --border-chat:         #d8d8e8;
+  --msg-theirs-bg:       #e2e2ee;
+  --msg-theirs-color:    #1a1a2e;
+  --match-item-hover:    #e2e2ee;
+  --match-item-active:   #fde8e8;
+  --modal-box-bg:        #ffffff;
+  --modal-overlay:       rgba(0,0,0,.45);
+  --reason-btn-bg:       #f5f5f8;
+  --reason-btn-sel-bg:   #fde8e8;
+  --avatar-placeholder:  #d8d8e8;
+  --online-ring-border:  #ededf5;
+  --sidebar-text:        #1a1a2e;
 }
 
 /* ── Base Reset ──────────────────────────────────────────── */
@@ -125,10 +168,7 @@ nav a:hover {
   font-weight: 600;
 }
 
-.theme-toggle:hover {
-  background: rgba(255,255,255,.25);
-}
-
+.theme-toggle:hover { background: rgba(255,255,255,.25); }
 .theme-toggle .icon { font-size: .9rem; }
 
 /* ── Online indicator ────────────────────────────────────── */
@@ -209,9 +249,9 @@ input:focus, select:focus, textarea:focus {
   border-color: var(--input-focus-bdr);
 }
 
-.form-group { margin-bottom: 1rem; }
-.helptext { font-size: .75rem; color: var(--text-dimmer); margin-top: 3px; }
-.field-error { color: #ff6b6b; font-size: .78rem; margin-top: 3px; }
+.form-group      { margin-bottom: 1rem; }
+.helptext        { font-size: .75rem; color: var(--text-dimmer); margin-top: 3px; }
+.field-error     { color: #ff6b6b; font-size: .78rem; margin-top: 3px; }
 
 /* ── Buttons ─────────────────────────────────────────────── */
 .btn {
@@ -227,12 +267,12 @@ input:focus, select:focus, textarea:focus {
   letter-spacing: .3px;
   font-family: inherit;
 }
-.btn:hover { transform: translateY(-1px); opacity: .9; }
-.btn-primary  { background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: #fff; }
-.btn-secondary { background: var(--bg-btn-sec); color: var(--text-primary); }
-.btn-danger   { background: #c0392b; color: #fff; }
-.btn-success  { background: #27ae60; color: #fff; }
-.btn-sm       { padding: 6px 16px; font-size: .82rem; }
+.btn:hover        { transform: translateY(-1px); opacity: .9; }
+.btn-primary      { background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: #fff; }
+.btn-secondary    { background: var(--bg-btn-sec); color: var(--text-primary); }
+.btn-danger       { background: #c0392b; color: #fff; }
+.btn-success      { background: #27ae60; color: #fff; }
+.btn-sm           { padding: 6px 16px; font-size: .82rem; }
 
 /* ── Misc ────────────────────────────────────────────────── */
 .link { color: #ff6b6b; text-decoration: none; }
@@ -248,3 +288,80 @@ input:focus, select:focus, textarea:focus {
 .badge-online  { background: #1a3a2a; color: #2ed573; }
 .badge-offline { background: #2a2a3a; color: #9090b0; }
 .badge-blocked { background: #3a1a1a; color: #ff6b6b; }
+
+/* ── Matches grid page ───────────────────────────────────── */
+.matches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.match-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  position: relative;
+  transition: var(--transition-theme);
+}
+
+.match-card-online-dot {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 10px;
+  height: 10px;
+  background: #2ed573;
+  border-radius: 50%;
+  border: 2px solid var(--bg-card);
+}
+
+.match-card-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ff6b6b;
+  margin-bottom: .8rem;
+}
+
+.match-card-avatar-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: var(--avatar-placeholder);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto .8rem;
+}
+
+.match-card-name {
+  font-weight: 700;
+  margin-bottom: .2rem;
+}
+
+.match-card-age {
+  color: #ff6b6b;
+  font-size: .82rem;
+}
+
+.match-card-location {
+  color: var(--text-muted);
+  font-size: .78rem;
+  margin: .3rem 0;
+}
+
+.matches-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-muted);
+}
+
+.matches-empty .empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
