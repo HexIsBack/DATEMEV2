@@ -1,8 +1,15 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.password_validation import validate_password
 from .models import CustomUser
 from datetime import date
+
+# Common disposable/fake email domains to block
+BLOCKED_DOMAINS = {
+    'mailinator.com', 'tempmail.com', 'throwaway.email', 'guerrillamail.com',
+    'trashmail.com', 'yopmail.com', 'sharklasers.com', 'guerrillamailblock.com',
+    'grr.la', 'spam4.me', 'fakeinbox.com', 'maildrop.cc', 'dispostable.com',
+    'temp-mail.org', 'getnada.com', 'mailnull.com', '10minutemail.com',
+}
 
 class RegistrationForm(UserCreationForm):
     email      = forms.EmailField(required=True)
@@ -21,9 +28,34 @@ class RegistrationForm(UserCreationForm):
         return username
 
     def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if email and CustomUser.objects.filter(email__iexact=email).exists():
+        email = self.cleaned_data.get('email', '').strip().lower()
+
+        # Must have exactly one @ with something on both sides
+        if email.count('@') != 1:
+            raise forms.ValidationError('Enter a valid email address.')
+
+        local, domain = email.split('@')
+
+        # Local part (before @) can't be empty
+        if not local:
+            raise forms.ValidationError('Enter a valid email address.')
+
+        # Domain must have a dot (e.g. gmail.com)
+        if '.' not in domain:
+            raise forms.ValidationError('Email domain looks invalid (e.g. gmail.com).')
+
+        # Domain can't start or end with a dot or hyphen
+        if domain.startswith('.') or domain.endswith('.') or domain.startswith('-'):
+            raise forms.ValidationError('Email domain looks invalid.')
+
+        # Block disposable email domains
+        if domain in BLOCKED_DOMAINS:
+            raise forms.ValidationError('Disposable or temporary email addresses are not allowed.')
+
+        # Check if already registered
+        if CustomUser.objects.filter(email__iexact=email).exists():
             raise forms.ValidationError('An account with that email already exists.')
+
         return email
 
     def clean_birth_date(self):

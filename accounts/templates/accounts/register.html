@@ -117,13 +117,27 @@ document.getElementById('id_username').addEventListener('input', function(){
 
 // ── Email availability ─────────────────────────────────────────────────────
 let emailTimer;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 document.getElementById('id_email').addEventListener('input', function(){
   clearTimeout(emailTimer);
   const val = this.value.trim();
   const status = document.getElementById('email-status');
   const msg    = document.getElementById('email-msg');
+
+  // Clear if empty
   if (!val) { status.textContent=''; msg.textContent=''; return; }
+
+  // Show invalid format instantly — no server call needed
+  if (!emailRegex.test(val)) {
+    status.textContent = '❌';
+    msg.style.color = '#ff6b6b';
+    msg.textContent = 'Enter a valid email (e.g. you@gmail.com).';
+    return;
+  }
+
+  // Format is valid — now check if it's taken
   status.textContent = '⏳';
+  msg.textContent = '';
   emailTimer = setTimeout(() => {
     fetch(`{% url 'check_email' %}?email=${encodeURIComponent(val)}`)
       .then(r=>r.json())
