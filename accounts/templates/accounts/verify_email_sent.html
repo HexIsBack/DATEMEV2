@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Check Your Email — DateMe{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
+
+    <div class="auth-icon">📬</div>
+    <h2 class="auth-title">Check Your Email</h2>
+
+    <div class="info-box">
+      <p>We sent a verification link to your email address.</p>
+      <p style="margin-top:.75rem">Click the link in that email to activate your account. Check your <strong>spam or junk folder</strong> if you don't see it.</p>
+    </div>
+
+    <div class="detail-box">
+      <div class="detail-row"><span class="detail-icon">⏳</span><span>The link expires in <strong>24 hours</strong></span></div>
+      <div class="detail-row"><span class="detail-icon">🔒</span><span>It can only be used once</span></div>
+    </div>
+
+    <p style="color:var(--text-muted);font-size:.85rem;margin-top:1.5rem;text-align:center">Didn't receive it?</p>
+    <form method="post" action="{% url 'resend_verification' %}" style="margin-top:.5rem">
+      {% csrf_token %}
+      <input type="email" name="email" placeholder="your@email.com" required
+             style="width:100%;padding:.6rem .9rem;border-radius:8px;border:1px solid var(--border-color);background:var(--bg-input);color:var(--text-main);font-size:.9rem;margin-bottom:.6rem">
+      <button type="submit" class="btn btn-secondary btn-full">Resend Verification Email</button>
+    </form>
+
+    <a href="{% url 'login' %}" class="btn btn-primary btn-full" style="margin-top:.8rem">Back to Login</a>
+
+  </div>
+</div>
+{% endblock %}
