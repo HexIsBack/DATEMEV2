@@ -23,16 +23,16 @@
     {% if user.is_online %}<span class="online-dot"></span>{% endif %}
 
     {% if user.is_staff %}
-      {# Admin users: only Admin link + Logout #}
       <a href="{% url 'custom_admin' %}" style="color:#ffd700">🛡️ Admin</a>
     {% else %}
-      {# Regular users: full nav #}
       <a href="{% url 'swipe' %}">Discover</a>
-      <a href="{% url 'matches' %}">Matches</a>
+      <a href="{% url 'matches' %}">
+        Matches
+        <span id="navUnreadBadge" class="nav-unread-badge" style="display:none"></span>
+      </a>
       <a href="{% url 'my_profile' %}">Profile</a>
     {% endif %}
 
-    <!-- Dark/Light toggle -->
     <button id="themeToggle" class="theme-toggle" type="button">
       <span class="icon">☀️</span> Light Mode
     </button>
@@ -51,5 +51,12 @@
 {% block content %}{% endblock %}
 
 {% block extra_js %}{% endblock %}
+
+{% if user.is_authenticated and not user.is_staff %}
+<script src="{% static 'js/matches_chat.js' %}"></script>
+<script>
+  initNotificationPoll("{% url 'notification_poll' %}", "{{ csrf_token }}");
+</script>
+{% endif %}
 </body>
 </html>

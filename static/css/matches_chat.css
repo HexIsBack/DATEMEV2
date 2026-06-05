@@ -355,3 +355,173 @@
   .sidebar-header .count-badge { display: none; }
   .match-item { justify-content: center; padding: .7rem; }
 }
+
+/* ── Read receipts ───────────────────────────────────────────────────── */
+.read-receipt {
+  font-size: .6rem;
+  color: #9090b0;
+  margin-left: .3rem;
+  transition: color .3s;
+}
+.read-receipt.seen { color: #2ed573; }
+
+/* ── Typing indicator ────────────────────────────────────────────────── */
+.typing-bubble {
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--msg-theirs-bg);
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+  padding: .55rem .9rem;
+  margin-bottom: .2rem;
+}
+.typing-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #9090b0;
+  animation: typingBounce 1.2s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: .2s; }
+.typing-dot:nth-child(3) { animation-delay: .4s; }
+@keyframes typingBounce {
+  0%,60%,100% { transform: translateY(0); opacity:.6; }
+  30%          { transform: translateY(-5px); opacity:1; }
+}
+
+/* ── Message reactions ───────────────────────────────────────────────── */
+.msg { position: relative; }
+
+.msg-reactions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: .3rem;
+}
+.reaction-pill {
+  font-size: .78rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-chat);
+  border-radius: 99px;
+  padding: 1px 6px;
+  cursor: default;
+  user-select: none;
+  transition: transform .1s;
+}
+.reaction-pill.mine {
+  border-color: #ff6b6b;
+  background: rgba(255,107,107,.12);
+}
+
+.react-trigger {
+  display: none;
+  position: absolute;
+  top: 4px; right: -28px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-chat);
+  border-radius: 50%;
+  width: 22px; height: 22px;
+  font-size: .7rem;
+  line-height: 1;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 0;
+  transition: background .15s;
+}
+.msg:hover .react-trigger { display: flex; align-items:center; justify-content:center; }
+.msg-mine .react-trigger   { right: auto; left: -28px; }
+
+.emoji-picker-popup {
+  position: absolute;
+  display: flex;
+  gap: 4px;
+  background: var(--modal-box-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 6px 8px;
+  z-index: 200;
+  box-shadow: 0 4px 16px rgba(0,0,0,.3);
+}
+.emoji-btn {
+  background: none;
+  border: none;
+  font-size: 1.15rem;
+  cursor: pointer;
+  border-radius: 6px;
+  padding: 3px 5px;
+  transition: background .15s, transform .1s;
+}
+.emoji-btn:hover { background: var(--match-item-hover); transform: scale(1.25); }
+
+/* ── Match expiry indicators ─────────────────────────────────────────── */
+.expiry-dot  { font-size: .7rem; margin-left: 3px; }
+.expiry-hint { color: #ff9f43; font-size: .75rem; font-style: italic; }
+
+.expiry-timer {
+  font-size: .72rem;
+  color: #ff9f43;
+  background: rgba(255,159,67,.12);
+  border: 1px solid rgba(255,159,67,.3);
+  border-radius: 99px;
+  padding: 3px 10px;
+  margin-right: .5rem;
+}
+
+/* ── Toast notifications ─────────────────────────────────────────────── */
+.dateme-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  background: #1a1a2e;
+  border: 1px solid #ff6b6b;
+  color: #f0f0f5;
+  border-radius: 12px;
+  padding: .75rem 1.2rem;
+  font-size: .88rem;
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  z-index: 9999;
+  box-shadow: 0 4px 20px rgba(0,0,0,.4);
+  animation: toastIn .3s ease;
+  max-width: 320px;
+}
+@keyframes toastIn {
+  from { transform: translateY(20px); opacity:0; }
+  to   { transform: translateY(0);    opacity:1; }
+}
+.toast-close {
+  background: none; border: none;
+  color: #9090b0; cursor: pointer;
+  font-size: 1.1rem; padding: 0;
+  line-height: 1; flex-shrink: 0;
+}
+
+/* ── Nav unread badge ────────────────────────────────────────────────── */
+.nav-unread-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  background: #ff6b6b;
+  color: #fff;
+  border-radius: 99px;
+  font-size: .65rem;
+  font-weight: 700;
+  padding: 0 4px;
+  margin-left: 4px;
+  vertical-align: middle;
+  line-height: 1;
+}
+
+/* ── Msg footer (time + receipt on same row) ─────────────────────────── */
+.msg-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  margin-top: .2rem;
+}
+.msg-time { font-size: .65rem; opacity: .6; }
