@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static chat_extras %}
 {% block title %}Matches — DateMe{% endblock %}
 
 {% block extra_css %}
@@ -125,7 +125,7 @@
             </div>
             <!-- Reactions display -->
             <div class="msg-reactions" id="reactions-{{ msg.id }}">
-              {% for r in msg._reactions %}
+              {% for r in reactions_map|get_reactions:msg.id %}
                 <span class="reaction-pill {% if r.user_id == me.id %}mine{% endif %}"
                       data-emoji="{{ r.emoji }}">{{ r.emoji }}</span>
               {% endfor %}

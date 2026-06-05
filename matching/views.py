@@ -141,22 +141,17 @@ def matches_chat_view(request, user_id=None):
                     'user_id': r.user_id, 'emoji': r.emoji
                 })
 
-            # Attach reactions to each message object for template
-            chat_msgs_with_reactions = []
-            for msg in chat_msgs:
-                msg._reactions = reactions_map.get(msg.id, [])
-                chat_msgs_with_reactions.append(msg)
-
             Message.objects.using('chat_db').filter(
                 sender=active_user.id, receiver=me.id, is_read=False
             ).update(is_read=True)
 
             return render(request, 'matching/matches_chat.html', {
-                'match_list':   match_list,
-                'active_user':  active_user,
-                'active_match': active_match,
-                'chat_msgs':    chat_msgs_with_reactions,
-                'me':           me,
+                'match_list':    match_list,
+                'active_user':   active_user,
+                'active_match':  active_match,
+                'chat_msgs':     chat_msgs,
+                'reactions_map': reactions_map,
+                'me':            me,
                 'reactions_allowed': ['❤️','😂','😮','😢','👍','🔥'],
             })
 
