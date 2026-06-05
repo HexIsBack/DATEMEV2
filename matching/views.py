@@ -35,6 +35,8 @@ def swipe_view(request):
         .exclude(id=me.id)
         .exclude(id__in=already_swiped)
         .exclude(is_blocked=True)
+        .exclude(is_staff=True)
+        .exclude(is_superuser=True)
         .select_related('profile')
         .filter(profile__is_complete=True)
         .first()
@@ -85,6 +87,8 @@ def matches_chat_view(request, user_id=None):
     match_list = []
     for m in raw_matches:
         other = m.other_user(me)
+        if other.is_staff or other.is_superuser:
+            continue
         last_msg = Message.objects.using('chat_db').filter(
             Q(sender=me.id, receiver=other.id) | Q(sender=other.id, receiver=me.id)
         ).order_by('-timestamp').first()
