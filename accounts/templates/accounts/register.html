@@ -5,12 +5,54 @@
 <div class="card">
   <h2 style="text-align:center;font-size:1.6rem">Join DateMe 💕</h2>
   <p style="text-align:center;color:#9090b0;margin-bottom:1.5rem;font-size:.88rem">Find your match. Must be 18+.</p>
-  <form method="post">
+  <form method="post" id="reg-form">
     {% csrf_token %}
+
     {% for field in form %}
     <div class="form-group">
       <label>{{ field.label }}</label>
-      {{ field }}
+
+      {# ── Username field ── #}
+      {% if field.html_name == 'username' %}
+        <div style="position:relative">
+          {{ field }}
+          <span id="username-status" style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);font-size:1rem"></span>
+        </div>
+        <p id="username-msg" style="font-size:.78rem;margin-top:.3rem"></p>
+
+      {# ── Email field ── #}
+      {% elif field.html_name == 'email' %}
+        <div style="position:relative">
+          {{ field }}
+          <span id="email-status" style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);font-size:1rem"></span>
+        </div>
+        <p id="email-msg" style="font-size:.78rem;margin-top:.3rem"></p>
+
+      {# ── Password 1 field ── #}
+      {% elif field.html_name == 'password1' %}
+        {{ field }}
+        <!-- Strength bar -->
+        <div style="margin-top:.5rem">
+          <div style="height:6px;border-radius:4px;background:#1a1a2e;overflow:hidden">
+            <div id="strength-bar" style="height:100%;width:0%;border-radius:4px;transition:all .3s"></div>
+          </div>
+          <p id="strength-label" style="font-size:.76rem;margin-top:.3rem;color:#9090b0"></p>
+        </div>
+        <!-- Requirements checklist -->
+        <ul style="list-style:none;padding:0;margin:.5rem 0 0;font-size:.77rem;color:#6060a0" id="pw-rules">
+          <li id="r-len">○ At least 8 characters</li>
+          <li id="r-upper">○ One uppercase letter</li>
+          <li id="r-lower">○ One lowercase letter</li>
+          <li id="r-num">○ One number</li>
+          <li id="r-special">○ One special character (!@#$...)</li>
+          <li id="r-user">○ Not the same as your username</li>
+        </ul>
+
+      {# ── All other fields ── #}
+      {% else %}
+        {{ field }}
+      {% endif %}
+
       {% if field.help_text %}<p class="helptext">{{ field.help_text }}</p>{% endif %}
       {% for e in field.errors %}<p class="field-error">⚠ {{ e }}</p>{% endfor %}
     </div>
@@ -37,12 +79,114 @@
 </div>
 </div>
 {% endblock %}
+
 {% block extra_js %}
 <script>
+// ── CAPTCHA ────────────────────────────────────────────────────────────────
 function refreshCaptcha(){
   fetch("{% url 'refresh_captcha' %}")
     .then(r=>r.json())
     .then(d=>{ document.getElementById('captcha-img').src = d.captcha_img; });
 }
+
+// ── Username availability ──────────────────────────────────────────────────
+let usernameTimer;
+document.getElementById('id_username').addEventListener('input', function(){
+  clearTimeout(usernameTimer);
+  const val = this.value.trim();
+  const status = document.getElementById('username-status');
+  const msg    = document.getElementById('username-msg');
+  if (!val) { status.textContent=''; msg.textContent=''; return; }
+  status.textContent = '⏳';
+  usernameTimer = setTimeout(() => {
+    fetch(`{% url 'check_username' %}?username=${encodeURIComponent(val)}`)
+      .then(r=>r.json())
+      .then(d=>{
+        if(d.taken){
+          status.textContent = '❌';
+          msg.style.color = '#ff6b6b';
+          msg.textContent = 'Username already taken.';
+        } else {
+          status.textContent = '✅';
+          msg.style.color = '#2ed573';
+          msg.textContent = 'Username is available!';
+        }
+      });
+  }, 500);
+});
+
+// ── Email availability ─────────────────────────────────────────────────────
+let emailTimer;
+document.getElementById('id_email').addEventListener('input', function(){
+  clearTimeout(emailTimer);
+  const val = this.value.trim();
+  const status = document.getElementById('email-status');
+  const msg    = document.getElementById('email-msg');
+  if (!val) { status.textContent=''; msg.textContent=''; return; }
+  status.textContent = '⏳';
+  emailTimer = setTimeout(() => {
+    fetch(`{% url 'check_email' %}?email=${encodeURIComponent(val)}`)
+      .then(r=>r.json())
+      .then(d=>{
+        if(d.taken){
+          status.textContent = '❌';
+          msg.style.color = '#ff6b6b';
+          msg.textContent = 'Email already registered.';
+        } else {
+          status.textContent = '✅';
+          msg.style.color = '#2ed573';
+          msg.textContent = 'Email is available!';
+        }
+      });
+  }, 500);
+});
+
+// ── Password strength ──────────────────────────────────────────────────────
+const STRENGTH_LEVELS = [
+  { label:'Very Weak',  color:'#ff4444', pct: 20 },
+  { label:'Weak',       color:'#ff6b6b', pct: 40 },
+  { label:'Fair',       color:'#ffa502', pct: 60 },
+  { label:'Strong',     color:'#2ed573', pct: 80 },
+  { label:'Very Strong',color:'#1db954', pct:100 },
+];
+
+document.getElementById('id_password1').addEventListener('input', function(){
+  const p = this.value;
+  const username = (document.getElementById('id_username').value || '').toLowerCase();
+
+  // Rules
+  const rules = {
+    'r-len':     p.length >= 8,
+    'r-upper':   /[A-Z]/.test(p),
+    'r-lower':   /[a-z]/.test(p),
+    'r-num':     /[0-9]/.test(p),
+    'r-special': /[^A-Za-z0-9]/.test(p),
+    'r-user':    p.length > 0 && p.toLowerCase() !== username,
+  };
+
+  // Update rule icons
+  Object.entries(rules).forEach(([id, pass]) => {
+    const el = document.getElementById(id);
+    if(el){
+      el.textContent = (pass ? '✅ ' : '○ ') + el.textContent.replace(/^[✅○] /, '');
+      el.style.color = pass ? '#2ed573' : '#6060a0';
+    }
+  });
+
+  // Score
+  if(!p){ 
+    document.getElementById('strength-bar').style.width='0%';
+    document.getElementById('strength-label').textContent='';
+    return;
+  }
+  const score = Object.values(rules).filter(Boolean).length; // 0-6
+  const idx   = Math.min(Math.floor(score / 6 * 5), 4);
+  const level = STRENGTH_LEVELS[idx];
+  const bar   = document.getElementById('strength-bar');
+  bar.style.width      = level.pct + '%';
+  bar.style.background = level.color;
+  document.getElementById('strength-label').style.color = level.color;
+  document.getElementById('strength-label').textContent  = level.label;
+});
 </script>
 {% endblock %}
