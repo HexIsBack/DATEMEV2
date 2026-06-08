@@ -1,6 +1,12 @@
 class AppRouter:
     MEDIA_MODELS = {'profileimage', 'profilephoto'}
 
+    # Apps that must always stay in the default (users.sqlite3) database
+    DEFAULT_APPS = {
+        'admin', 'auth', 'contenttypes', 'sessions', 'messages',
+        'accounts', 'profiles', 'matching',
+    }
+
     def db_for_read(self, model, **hints):
         label = model._meta.app_label
         name  = model.__name__.lower()
@@ -27,6 +33,6 @@ class AppRouter:
             return db == 'chat_db'
         if app_label == 'profiles' and model_name in self.MEDIA_MODELS:
             return db == 'media_db'
-        if app_label == 'profiles' and model_name not in self.MEDIA_MODELS:
-            return db == 'default'
+        # Everything else (including sessions, auth, accounts, matching, etc.)
+        # must only migrate to 'default'
         return db == 'default'

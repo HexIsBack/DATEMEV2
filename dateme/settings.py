@@ -39,6 +39,14 @@ DATABASES = {
 }
 
 DATABASE_ROUTERS = ['dateme.routers.AppRouter']
+
+# ── Sessions ────────────────────────────────────────────────────────────
+# Explicitly use the database backend and pin it to the 'default' DB.
+# This prevents SessionInterrupted errors caused by the multi-DB setup.
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+SESSION_COOKIE_AGE = 1209600          # 2 weeks, in seconds
+SESSION_SAVE_EVERY_REQUEST = False    # only save when modified (default)
+
 AUTH_USER_MODEL = 'accounts.CustomUser'
 LOGIN_REDIRECT_URL = '/profiles/setup/'
 LOGOUT_REDIRECT_URL = '/accounts/login/'
@@ -52,10 +60,6 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ── Password Reset Email ────────────────────────────────────────────────
-# Personal project setup — just fill in your Gmail + App Password below.
-# Get an App Password at: https://myaccount.google.com/apppasswords
-# (You need 2-Step Verification on, then create an app password for "Mail")
-
 EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST          = 'smtp.gmail.com'
 EMAIL_PORT          = 587
