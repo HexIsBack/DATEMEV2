@@ -96,7 +96,7 @@
         <div class="card-meta">
           {% if candidate.profile.age %}{{ candidate.profile.age }} yrs{% endif %}
           {% if candidate.profile.location %} · 📍 {{ candidate.profile.location }}{% endif %}
-          {% if candidate._distance_km %} · {{ candidate._distance_km }} km away{% endif %}
+          {% if candidate.distance_km %} · {{ candidate.distance_km }} km away{% endif %}
         </div>
 
         {% if candidate.profile.interest_tags %}

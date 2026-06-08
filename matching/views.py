@@ -78,11 +78,11 @@ def swipe_view(request):
             if p.latitude and p.longitude:
                 dist = haversine(my_profile.latitude, my_profile.longitude, p.latitude, p.longitude)
                 if dist <= my_profile.max_distance_km:
-                    u._distance_km = round(dist, 1)
+                    u.distance_km = round(dist, 1)
                     filtered.append(u)
             else:
                 # No location data — include anyway
-                u._distance_km = None
+                u.distance_km = None
                 filtered.append(u)
         candidates = filtered
 
