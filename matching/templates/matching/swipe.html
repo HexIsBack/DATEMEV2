@@ -3,67 +3,131 @@
 {% block extra_css %}
 <style>
 .swipe-area{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 56px);padding:1rem}
-.card-stack{position:relative;width:340px;height:490px}
+.card-stack{position:relative;width:340px;height:520px}
 .profile-card{position:absolute;width:100%;height:100%;border-radius:20px;overflow:hidden;background:#1a1a2e;border:1px solid #2a2a4a;box-shadow:0 8px 40px rgba(0,0,0,.5);cursor:grab;user-select:none}
 .profile-card:active{cursor:grabbing}
-.card-photo{width:100%;height:340px;object-fit:cover;background:#2a2a4a;display:flex;align-items:center;justify-content:center;font-size:5rem}
-.card-info{padding:.8rem 1.2rem}
-.card-name{font-size:1.3rem;font-weight:700}
-.card-meta{color:#9090b0;font-size:.85rem;margin-top:.2rem}
-.card-bio{font-size:.82rem;color:#c0c0d0;margin-top:.4rem;line-height:1.5;max-height:48px;overflow:hidden}
-.card-footer{display:flex;justify-content:flex-end;padding:.3rem 1.2rem .6rem}
-.action-btns{display:flex;gap:1.5rem;margin-top:1.2rem;justify-content:center}
+/* Photo carousel */
+.card-photos{position:relative;width:100%;height:340px;background:#2a2a4a;overflow:hidden}
+.photo-slide{display:none;width:100%;height:100%}
+.photo-slide.active{display:block}
+.photo-slide img{width:100%;height:100%;object-fit:cover}
+.photo-dots{position:absolute;top:8px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:2}
+.photo-dot{width:24px;height:3px;border-radius:2px;background:rgba(255,255,255,.4);cursor:pointer;transition:background .2s}
+.photo-dot.active{background:#fff}
+.photo-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.3);border:none;color:#fff;font-size:1.2rem;cursor:pointer;padding:8px 10px;z-index:2}
+.photo-nav-left{left:4px;border-radius:0 6px 6px 0}
+.photo-nav-right{right:4px;border-radius:6px 0 0 6px}
+.no-photo{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem}
+/* Card info */
+.card-info{padding:.7rem 1.1rem .3rem}
+.card-name{font-size:1.25rem;font-weight:700}
+.card-meta{color:#9090b0;font-size:.82rem;margin-top:.2rem}
+.card-tags{display:flex;flex-wrap:wrap;gap:.3rem;margin-top:.5rem}
+.card-tag{font-size:.7rem;padding:.2rem .55rem;border-radius:99px;background:#1a1a3a;border:1px solid #3a3a5a;color:#c0b0ff}
+.card-prompt{font-size:.78rem;color:#c0c0d0;margin-top:.4rem;font-style:italic;line-height:1.4}
+.card-footer{display:flex;justify-content:space-between;align-items:center;padding:.2rem 1.1rem .5rem}
+/* Indicators */
+.indicator{position:absolute;top:20px;font-size:1.8rem;font-weight:900;opacity:0;transition:opacity .2s;padding:6px 14px;border-radius:8px;border:3px solid}
+.indicator-like{left:20px;color:#2ed573;border-color:#2ed573;transform:rotate(-15deg)}
+.indicator-pass{right:20px;color:#ff6b6b;border-color:#ff6b6b;transform:rotate(15deg)}
+/* Buttons */
+.action-btns{display:flex;gap:1.5rem;margin-top:1.2rem;justify-content:center;align-items:center}
 .action-btn{width:64px;height:64px;border-radius:50%;border:none;font-size:1.6rem;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.3);transition:transform .15s}
 .action-btn:hover{transform:scale(1.1)}
 .btn-pass{background:#1a1a2e;border:2px solid #ff6b6b}
 .btn-like{background:linear-gradient(135deg,#ff6b6b,#ee5a24)}
-.indicator{position:absolute;top:20px;font-size:1.8rem;font-weight:900;opacity:0;transition:opacity .2s;padding:6px 14px;border-radius:8px;border:3px solid}
-.indicator-like{left:20px;color:#2ed573;border-color:#2ed573;transform:rotate(-15deg)}
-.indicator-pass{right:20px;color:#ff6b6b;border-color:#ff6b6b;transform:rotate(15deg)}
-.no-more{text-align:center;padding:3rem 2rem}
-.match-popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:999;align-items:center;justify-content:center}
+.btn-boost{width:44px;height:44px;font-size:1.1rem;background:linear-gradient(135deg,#ffd700,#ff9500);border:none;border-radius:50%;cursor:pointer;box-shadow:0 4px 16px rgba(255,150,0,.4);transition:transform .15s}
+.btn-boost:hover{transform:scale(1.1)}
+/* Boost badge */
+.boost-badge{position:fixed;top:70px;right:16px;background:linear-gradient(135deg,#ffd700,#ff9500);color:#000;font-size:.72rem;font-weight:700;padding:.35rem .7rem;border-radius:99px;z-index:100}
+/* Match popup */
+.match-popup{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:999;align-items:center;justify-content:center}
 .match-popup.show{display:flex}
 .match-content{text-align:center;animation:popIn .4s ease}
 @keyframes popIn{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
 .match-title{font-size:2.5rem;font-weight:900;background:linear-gradient(135deg,#ff6b6b,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1rem}
 .btn-report-card{background:transparent;border:none;color:#6060a0;font-size:.72rem;cursor:pointer;padding:2px 6px;border-radius:4px}
-.btn-report-card:hover{color:#ff6b6b;background:#2a1a1a}
+.btn-report-card:hover{color:#ff6b6b}
 </style>
 {% endblock %}
+
 {% block content %}
+{% if my_boost %}
+<div class="boost-badge">⚡ Boost active — {{ my_boost.minutes_left }}m left</div>
+{% endif %}
+
 <div class="swipe-area">
 {% if candidate %}
-  {% with photo_url=candidate.profile.get_photo_url %}
+  {% with photos=candidate.profile.get_all_photos prompts=candidate.profile.get_prompts %}
   <div class="card-stack">
     <div class="profile-card" id="profileCard" data-id="{{ candidate.id }}">
       <div class="indicator indicator-like" id="likeInd">LIKE 💚</div>
       <div class="indicator indicator-pass" id="passInd">PASS 👋</div>
-      {% if photo_url %}
-        <img src="{{ photo_url }}" class="card-photo">
-      {% else %}
-        <div class="card-photo">👤</div>
-      {% endif %}
+
+      <!-- Photo carousel -->
+      <div class="card-photos" id="photoCarousel">
+        {% if photos %}
+          <!-- Dots -->
+          {% if photos|length > 1 %}
+          <div class="photo-dots" id="photoDots">
+            {% for p in photos %}<div class="photo-dot {% if forloop.first %}active{% endif %}" onclick="goToSlide({{ forloop.counter0 }})"></div>{% endfor %}
+          </div>
+          {% endif %}
+          {% for p in photos %}
+          <div class="photo-slide {% if forloop.first %}active{% endif %}" data-index="{{ forloop.counter0 }}">
+            <img src="{{ p.url }}" draggable="false">
+          </div>
+          {% endfor %}
+          {% if photos|length > 1 %}
+          <button class="photo-nav photo-nav-left" onclick="changeSlide(-1)" id="prevBtn">‹</button>
+          <button class="photo-nav photo-nav-right" onclick="changeSlide(1)" id="nextBtn">›</button>
+          {% endif %}
+        {% else %}
+          <div class="no-photo">👤</div>
+        {% endif %}
+      </div>
+
+      <!-- Info -->
       <div class="card-info">
         <div class="card-name">
           {{ candidate.username }}
-          {% if candidate.is_online %}<span style="font-size:.68rem;background:#1a3a2a;color:#2ed573;padding:2px 7px;border-radius:99px;vertical-align:middle">● Online</span>{% endif %}
+          {% if candidate.is_online %}<span style="font-size:.65rem;background:#1a3a2a;color:#2ed573;padding:2px 6px;border-radius:99px;vertical-align:middle">● Online</span>{% endif %}
         </div>
         <div class="card-meta">
           {% if candidate.profile.age %}{{ candidate.profile.age }} yrs{% endif %}
           {% if candidate.profile.location %} · 📍 {{ candidate.profile.location }}{% endif %}
+          {% if candidate._distance_km %} · {{ candidate._distance_km }} km away{% endif %}
         </div>
-        {% if candidate.profile.bio %}<div class="card-bio">{{ candidate.profile.bio }}</div>{% endif %}
+
+        {% if candidate.profile.interest_tags %}
+        <div class="card-tags">
+          {% for tag in candidate.profile.interest_tags|slice:":5" %}
+          <span class="card-tag">{{ tag }}</span>
+          {% endfor %}
+        </div>
+        {% endif %}
+
+        {% for up in prompts|slice:":1" %}
+        <div class="card-prompt">"{{ up.answer }}"<span style="color:#6060a0;font-style:normal;font-size:.7rem"> — {{ up.prompt.question }}</span></div>
+        {% endfor %}
       </div>
+
       <div class="card-footer">
+        {% if candidate.profile.relationship_type %}
+          <span style="font-size:.72rem;color:#c080ff">{{ candidate.profile.get_relationship_type_display }}</span>
+        {% else %}<span></span>{% endif %}
         <a href="{% url 'report_user' candidate.id %}?next=/match/swipe/" class="btn-report-card">🚩 Report</a>
       </div>
     </div>
   </div>
   {% endwith %}
+
   <div class="action-btns">
     <button class="action-btn btn-pass" onclick="swipe('pass')" title="Pass">👋</button>
+    <button class="btn-boost" onclick="activateBoost()" title="Boost your profile for 30 min">⚡</button>
     <button class="action-btn btn-like" onclick="swipe('like')" title="Like">❤️</button>
   </div>
+
 {% else %}
   <div class="no-more card" style="width:340px;text-align:center;padding:3rem 2rem">
     <div style="font-size:3.5rem;margin-bottom:1rem">🎉</div>
@@ -74,6 +138,7 @@
 {% endif %}
 </div>
 
+<!-- Match popup -->
 <div class="match-popup" id="matchPopup">
   <div class="match-content">
     <div style="font-size:4rem;margin-bottom:.5rem">🎉</div>
@@ -85,60 +150,100 @@
     </div>
   </div>
 </div>
+
 {% endblock %}
 {% block extra_js %}
 <script>
+// ── Photo carousel ──────────────────────────────────────────────────────────
+let currentSlide = 0;
+const slides = document.querySelectorAll('.photo-slide');
+const dots   = document.querySelectorAll('.photo-dot');
+
+function goToSlide(n) {
+  if (!slides.length) return;
+  slides[currentSlide].classList.remove('active');
+  if (dots[currentSlide]) dots[currentSlide].classList.remove('active');
+  currentSlide = (n + slides.length) % slides.length;
+  slides[currentSlide].classList.add('active');
+  if (dots[currentSlide]) dots[currentSlide].classList.add('active');
+}
+function changeSlide(dir) { goToSlide(currentSlide + dir); }
+
+// Stop carousel clicks from triggering swipe drag
+document.querySelectorAll('.photo-nav, .photo-dot').forEach(el => {
+  el.addEventListener('mousedown', e => e.stopPropagation());
+  el.addEventListener('touchstart', e => e.stopPropagation());
+});
+
+// ── Drag to swipe ────────────────────────────────────────────────────────────
 const card = document.getElementById('profileCard');
-if(card){
-  let startX=0,curX=0,dragging=false;
-  const likeInd=document.getElementById('likeInd');
-  const passInd=document.getElementById('passInd');
-  card.addEventListener('mousedown',e=>{dragging=true;startX=e.clientX;});
-  document.addEventListener('mousemove',e=>{
-    if(!dragging)return;
-    curX=e.clientX-startX;
-    card.style.transform=`translateX(${curX}px) rotate(${curX*0.05}deg)`;
-    likeInd.style.opacity=curX>30?Math.min((curX-30)/80,1):0;
-    passInd.style.opacity=curX<-30?Math.min((-curX-30)/80,1):0;
+if (card) {
+  let startX=0, curX=0, dragging=false;
+  const likeInd = document.getElementById('likeInd');
+  const passInd = document.getElementById('passInd');
+
+  card.addEventListener('mousedown', e => { dragging=true; startX=e.clientX; });
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    curX = e.clientX - startX;
+    card.style.transform = `translateX(${curX}px) rotate(${curX*0.05}deg)`;
+    likeInd.style.opacity = curX > 30 ? Math.min((curX-30)/80,1) : 0;
+    passInd.style.opacity = curX < -30 ? Math.min((-curX-30)/80,1) : 0;
   });
-  document.addEventListener('mouseup',()=>{
-    if(!dragging)return;
-    dragging=false;
-    if(curX>80)swipe('like');
-    else if(curX<-80)swipe('pass');
-    else{card.style.transform='';likeInd.style.opacity=0;passInd.style.opacity=0;}
-    curX=0;
+  document.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    if (curX > 80) swipe('like');
+    else if (curX < -80) swipe('pass');
+    else { card.style.transform=''; likeInd.style.opacity=0; passInd.style.opacity=0; }
+    curX = 0;
   });
-  card.addEventListener('touchstart',e=>{startX=e.touches[0].clientX;dragging=true;});
-  card.addEventListener('touchmove',e=>{
-    if(!dragging)return;
-    curX=e.touches[0].clientX-startX;
-    card.style.transform=`translateX(${curX}px) rotate(${curX*0.05}deg)`;
-    likeInd.style.opacity=curX>30?Math.min((curX-30)/80,1):0;
-    passInd.style.opacity=curX<-30?Math.min((-curX-30)/80,1):0;
+  card.addEventListener('touchstart', e => { startX=e.touches[0].clientX; dragging=true; });
+  card.addEventListener('touchmove', e => {
+    if (!dragging) return;
+    curX = e.touches[0].clientX - startX;
+    card.style.transform = `translateX(${curX}px) rotate(${curX*0.05}deg)`;
+    likeInd.style.opacity = curX > 30 ? Math.min((curX-30)/80,1) : 0;
+    passInd.style.opacity = curX < -30 ? Math.min((-curX-30)/80,1) : 0;
   });
-  card.addEventListener('touchend',()=>{
-    dragging=false;
-    if(curX>80)swipe('like');
-    else if(curX<-80)swipe('pass');
-    else{card.style.transform='';likeInd.style.opacity=0;passInd.style.opacity=0;}
-    curX=0;
+  card.addEventListener('touchend', () => {
+    dragging = false;
+    if (curX > 80) swipe('like');
+    else if (curX < -80) swipe('pass');
+    else { card.style.transform=''; likeInd.style.opacity=0; passInd.style.opacity=0; }
+    curX = 0;
   });
 }
-function swipe(dir){
-  const card=document.getElementById('profileCard');
-  if(!card)return;
-  const id=card.dataset.id;
-  const fly=dir==='like'?600:-600;
-  card.style.transition='transform .4s ease';
-  card.style.transform=`translateX(${fly}px) rotate(${fly*0.05}deg)`;
-  fetch("{% url 'do_swipe' %}",{
-    method:'POST',
-    headers:{'Content-Type':'application/json','X-CSRFToken':'{{ csrf_token }}'},
-    body:JSON.stringify({target_id:id,direction:dir})
-  }).then(r=>r.json()).then(d=>{
-    if(d.matched){document.getElementById('matchPopup').classList.add('show');}
-    else{setTimeout(()=>location.reload(),400);}
+
+function swipe(dir) {
+  const card = document.getElementById('profileCard');
+  if (!card) return;
+  const id  = card.dataset.id;
+  const fly = dir === 'like' ? 600 : -600;
+  card.style.transition = 'transform .4s ease';
+  card.style.transform  = `translateX(${fly}px) rotate(${fly*0.05}deg)`;
+  fetch("{% url 'do_swipe' %}", {
+    method: 'POST',
+    headers: {'Content-Type':'application/json','X-CSRFToken':'{{ csrf_token }}'},
+    body: JSON.stringify({target_id: id, direction: dir})
+  }).then(r=>r.json()).then(d => {
+    if (d.matched) document.getElementById('matchPopup').classList.add('show');
+    else setTimeout(() => location.reload(), 400);
+  });
+}
+
+// ── Boost ────────────────────────────────────────────────────────────────────
+function activateBoost() {
+  fetch("{% url 'activate_boost' %}", {
+    method: 'POST',
+    headers: {'X-CSRFToken': '{{ csrf_token }}'}
+  }).then(r=>r.json()).then(d => {
+    if (d.ok) {
+      alert('⚡ Boost activated! Your profile will show first for 30 minutes.');
+      location.reload();
+    } else {
+      alert(`⚡ Boost already active — ${d.minutes_left} minutes left.`);
+    }
   });
 }
 </script>

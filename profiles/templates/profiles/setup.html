@@ -1,22 +1,167 @@
 {% extends 'base.html' %}
-{% block title %}Setup Profile{% endblock %}
+{% block title %}Setup Profile — DateMe{% endblock %}
 {% block content %}
-<div class="container" style="max-width:520px">
+<div class="container" style="max-width:600px;padding-bottom:3rem">
 <div class="card">
   <h2>Complete Your Profile ✨</h2>
-  <p style="color:#9090b0;margin-bottom:1.5rem;font-size:.88rem">Help others get to know you better</p>
-  <form method="post" enctype="multipart/form-data">
+  <p style="color:#9090b0;margin-bottom:1.5rem;font-size:.88rem">Help others get to know the real you</p>
+
+  <form method="post" enctype="multipart/form-data" id="setup-form">
     {% csrf_token %}
-    {% for field in form %}
-    <div class="form-group">
-      <label>{{ field.label }}</label>
-      {{ field }}
-      {% if field.help_text %}<p class="helptext">{{ field.help_text }}</p>{% endif %}
-      {% for e in field.errors %}<p class="field-error">⚠ {{ e }}</p>{% endfor %}
+
+    <!-- ── Photos ── -->
+    <div class="section-block">
+      <h3 class="section-heading">📸 Photos <span style="color:#9090b0;font-size:.8rem;font-weight:400">(up to 6)</span></h3>
+
+      <!-- Existing photos -->
+      {% if existing_photos %}
+      <div class="photo-grid" style="display:flex;flex-wrap:wrap;gap:.6rem;margin-bottom:.8rem">
+        {% for photo in existing_photos %}
+        <div style="position:relative">
+          <img src="{% url 'serve_photo' request.user.id %}?t={{ photo.id }}" style="width:90px;height:90px;object-fit:cover;border-radius:10px;border:2px solid #2a2a4a" onerror="this.style.display='none'">
+          <form method="post" action="{% url 'delete_photo' photo.id %}" style="display:inline">
+            {% csrf_token %}
+            <button type="submit" style="position:absolute;top:-6px;right:-6px;background:#ff6b6b;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:.65rem;color:white;line-height:20px;padding:0">✕</button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <label style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:90px;border:2px dashed #3a3a5a;border-radius:10px;cursor:pointer;color:#9090b0;font-size:.85rem;transition:border-color .2s" id="photo-drop-zone">
+        <span style="font-size:1.8rem">📷</span>
+        <span>Click to add photos</span>
+        <input type="file" name="photos" multiple accept="image/*" style="display:none" id="photo-input" onchange="previewPhotos(this)">
+      </label>
+      <div id="photo-previews" style="display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.6rem"></div>
     </div>
-    {% endfor %}
-    <button type="submit" class="btn btn-primary" style="width:100%">Save Profile & Start Swiping 💕</button>
+
+    <!-- ── Basic Info ── -->
+    <div class="section-block">
+      <h3 class="section-heading">👤 Basic Info</h3>
+      {% for field in form %}
+        {% if field.html_name in 'birth_date,gender,interested_in,bio,location' %}
+        <div class="form-group">
+          <label>{{ field.label }}</label>
+          {{ field }}
+          {% for e in field.errors %}<p class="field-error">⚠ {{ e }}</p>{% endfor %}
+        </div>
+        {% endif %}
+      {% endfor %}
+
+      <!-- Location detect -->
+      <div class="form-group">
+        <label>📍 Your Location (for distance matching)</label>
+        <input type="hidden" name="latitude"  id="lat-input"  value="{{ profile.latitude|default:'' }}">
+        <input type="hidden" name="longitude" id="lng-input"  value="{{ profile.longitude|default:'' }}">
+        <div style="display:flex;align-items:center;gap:.8rem">
+          <button type="button" onclick="detectLocation()" class="btn btn-secondary btn-sm" id="loc-btn">📡 Detect my location</button>
+          <span id="loc-status" style="font-size:.8rem;color:#9090b0">
+            {% if profile.latitude %}✅ Location saved{% else %}Not set{% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Interest Tags ── -->
+    <div class="section-block">
+      <h3 class="section-heading">🏷 Interest Tags</h3>
+      <p style="color:#9090b0;font-size:.8rem;margin-bottom:.8rem">Pick what describes you</p>
+      <div style="display:flex;flex-wrap:wrap;gap:.5rem">
+        {% for tag in interest_tags %}
+        <label class="interest-tag {% if tag in selected_tags %}selected{% endif %}">
+          <input type="checkbox" name="interest_tags" value="{{ tag }}" {% if tag in selected_tags %}checked{% endif %} style="display:none" onchange="this.closest('label').classList.toggle('selected',this.checked)">
+          {{ tag }}
+        </label>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- ── Prompts ── -->
+    <div class="section-block">
+      <h3 class="section-heading">💬 About Me</h3>
+      <p style="color:#9090b0;font-size:.8rem;margin-bottom:1rem">Answer up to 3 prompts to show your personality</p>
+      {% for prompt in prompts|slice:":3" %}
+      <div class="form-group">
+        <label style="color:#c080ff;font-size:.82rem">{{ prompt.question }}</label>
+        <input type="text" name="prompt_{{ prompt.id }}"
+               value="{{ user_prompts|default_if_none:'' }}"
+               placeholder="Your answer..."
+               style="width:100%;padding:.55rem .8rem;border-radius:8px;border:1px solid #2a2a4a;background:#0f0f1a;color:#e0e0f0;font-size:.88rem"
+               maxlength="300">
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- ── Preferences / Deal-breakers ── -->
+    <div class="section-block">
+      <h3 class="section-heading">⚙️ My Preferences</h3>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem">
+        {% for field in form %}
+          {% if field.html_name in 'min_age_pref,max_age_pref,max_distance_km,wants_kids,relationship_type' %}
+          <div class="form-group" style="margin:0">
+            <label style="font-size:.8rem">{{ field.label }}</label>
+            {{ field }}
+            {% for e in field.errors %}<p class="field-error">⚠ {{ e }}</p>{% endfor %}
+          </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="width:100%;margin-top:1rem">
+      Save Profile &amp; Start Swiping 💕
+    </button>
   </form>
 </div>
 </div>
+
+<style>
+.section-block{margin-bottom:1.6rem;padding-bottom:1.4rem;border-bottom:1px solid #1a1a2e}
+.section-heading{font-size:1rem;margin-bottom:1rem;color:#e0e0f0}
+.interest-tag{display:inline-block;padding:.35rem .75rem;border-radius:99px;border:1px solid #3a3a5a;cursor:pointer;font-size:.8rem;color:#9090b0;transition:all .15s;user-select:none}
+.interest-tag.selected{background:#e84393;border-color:#e84393;color:#fff}
+.interest-tag:hover{border-color:#9090b0}
+</style>
+
+{% block extra_js %}
+<script>
+function previewPhotos(input) {
+  const container = document.getElementById('photo-previews');
+  container.innerHTML = '';
+  Array.from(input.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.style.cssText = 'width:80px;height:80px;object-fit:cover;border-radius:8px;border:2px solid #e84393';
+      container.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function detectLocation() {
+  const btn    = document.getElementById('loc-btn');
+  const status = document.getElementById('loc-status');
+  if (!navigator.geolocation) { status.textContent = 'Not supported'; return; }
+  btn.textContent = '⏳ Detecting...';
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      document.getElementById('lat-input').value = pos.coords.latitude;
+      document.getElementById('lng-input').value = pos.coords.longitude;
+      status.style.color = '#2ed573';
+      status.textContent = '✅ Location detected!';
+      btn.textContent = '📡 Detect my location';
+    },
+    () => {
+      status.style.color = '#ff6b6b';
+      status.textContent = '❌ Could not detect. Enter location manually.';
+      btn.textContent = '📡 Detect my location';
+    }
+  );
+}
+</script>
+{% endblock %}
 {% endblock %}
