@@ -1,14 +1,17 @@
 import os
 from pathlib import Path
-from dotenv import load_dotenv
 import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Loads variables from a local .env file (this file is git-ignored).
-# On Vercel, .env doesn't exist — the variables come from the
-# Environment Variables you set in the Vercel dashboard instead.
-load_dotenv(BASE_DIR / '.env')
+# Loads variables from a local .env file for LOCAL development only.
+# On Vercel, python-dotenv isn't needed — env vars are injected directly
+# by the platform — so this import is optional and never breaks the build.
+try:
+    from dotenv import load_dotenv
+    load_dotenv(BASE_DIR / '.env')
+except ImportError:
+    pass
 
 SECRET_KEY = os.environ.get(
     'SECRET_KEY',
