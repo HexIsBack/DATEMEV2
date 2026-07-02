@@ -54,12 +54,26 @@
         <label>📍 Your Location (for distance matching)</label>
         <input type="hidden" name="latitude"  id="lat-input"  value="{{ profile.latitude|default:'' }}">
         <input type="hidden" name="longitude" id="lng-input"  value="{{ profile.longitude|default:'' }}">
-        <div style="display:flex;align-items:center;gap:.8rem">
+        <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap">
           <button type="button" onclick="detectLocation()" class="btn btn-secondary btn-sm" id="loc-btn">📡 Detect my location</button>
           <span id="loc-status" style="font-size:.8rem;color:#9090b0">
             {% if profile.latitude %}✅ Location saved{% else %}Not set{% endif %}
           </span>
         </div>
+
+        <!-- Manual fallback if GPS is denied/unavailable -->
+        <div id="manual-loc-wrap" style="display:none;margin-top:.6rem">
+          <div style="display:flex;gap:.5rem">
+            <input type="text" id="city-input" placeholder="Type your city, e.g. Quezon City"
+                   style="flex:1" class="form-control">
+            <button type="button" onclick="lookupCity()" class="btn btn-secondary btn-sm" id="city-lookup-btn">🔍 Look up</button>
+          </div>
+          <span id="city-status" style="font-size:.78rem;color:#9090b0;display:block;margin-top:.3rem"></span>
+        </div>
+        <button type="button" onclick="toggleManualLoc()" id="manual-loc-toggle"
+                style="background:none;border:none;color:#e84393;font-size:.78rem;cursor:pointer;padding:.3rem 0;text-decoration:underline">
+          Enter location manually instead
+        </button>
       </div>
     </div>
 
@@ -145,7 +159,11 @@ function previewPhotos(input) {
 function detectLocation() {
   const btn    = document.getElementById('loc-btn');
   const status = document.getElementById('loc-status');
-  if (!navigator.geolocation) { status.textContent = 'Not supported'; return; }
+  if (!navigator.geolocation) {
+    status.textContent = 'Not supported';
+    toggleManualLoc(true);
+    return;
+  }
   btn.textContent = '⏳ Detecting...';
   navigator.geolocation.getCurrentPosition(
     pos => {
@@ -157,10 +175,63 @@ function detectLocation() {
     },
     () => {
       status.style.color = '#ff6b6b';
-      status.textContent = '❌ Could not detect. Enter location manually.';
+      status.textContent = '❌ Could not detect. Enter location manually below.';
       btn.textContent = '📡 Detect my location';
+      toggleManualLoc(true);
     }
   );
+}
+
+function toggleManualLoc(forceOpen) {
+  const wrap = document.getElementById('manual-loc-wrap');
+  const isHidden = wrap.style.display === 'none';
+  wrap.style.display = (forceOpen || isHidden) ? 'block' : 'none';
+}
+
+/* Free geocoding via OpenStreetMap Nominatim — no API key, no cost. */
+function lookupCity() {
+  const cityInput = document.getElementById('city-input');
+  const status    = document.getElementById('city-status');
+  const btn       = document.getElementById('city-lookup-btn');
+  const query     = cityInput.value.trim();
+
+  if (!query) {
+    status.style.color = '#ff6b6b';
+    status.textContent = 'Type a city name first.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Looking up...';
+  status.style.color = '#9090b0';
+  status.textContent = '';
+
+  fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(query)}`, {
+    headers: { 'Accept-Language': 'en' }
+  })
+    .then(r => r.json())
+    .then(results => {
+      btn.disabled = false;
+      btn.textContent = '🔍 Look up';
+      if (!results.length) {
+        status.style.color = '#ff6b6b';
+        status.textContent = '❌ City not found. Try a different spelling.';
+        return;
+      }
+      const { lat, lon, display_name } = results[0];
+      document.getElementById('lat-input').value = lat;
+      document.getElementById('lng-input').value = lon;
+      document.getElementById('loc-status').style.color = '#2ed573';
+      document.getElementById('loc-status').textContent = '✅ Location saved';
+      status.style.color = '#2ed573';
+      status.textContent = `✅ Found: ${display_name}`;
+    })
+    .catch(() => {
+      btn.disabled = false;
+      btn.textContent = '🔍 Look up';
+      status.style.color = '#ff6b6b';
+      status.textContent = '❌ Lookup failed. Check your connection and try again.';
+    });
 }
 </script>
 {% endblock %}

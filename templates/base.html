@@ -40,6 +40,15 @@
     <a href="{% url 'logout' %}">Logout</a>
   </div>
 </nav>
+{% else %}
+<nav>
+  <span class="brand">💕 DateMe</span>
+  <div class="nav-links">
+    <button id="themeToggle" class="theme-toggle" type="button">
+      <span class="icon">☀️</span> Light Mode
+    </button>
+  </div>
+</nav>
 {% endif %}
 
 {% if messages %}
