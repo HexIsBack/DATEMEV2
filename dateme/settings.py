@@ -1,8 +1,21 @@
+import os
 from pathlib import Path
+from dotenv import load_dotenv
+import dj_database_url
+
 BASE_DIR = Path(__file__).resolve().parent.parent
-SECRET_KEY = 'some-very-secret-key-for-development-only'
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+
+# Loads variables from a local .env file (this file is git-ignored).
+# On Vercel, .env doesn't exist — the variables come from the
+# Environment Variables you set in the Vercel dashboard instead.
+load_dotenv(BASE_DIR / '.env')
+
+SECRET_KEY = os.environ.get(
+    'SECRET_KEY',
+    'django-insecure-dev-only-key-do-not-use-in-production',
+)
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -19,6 +32,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -33,9 +47,21 @@ TEMPLATES = [{'BACKEND':'django.template.backends.django.DjangoTemplates','DIRS'
 WSGI_APPLICATION = 'dateme.wsgi.application'
 
 DATABASES = {
-    'default':  {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'users.sqlite3'},
-    'chat_db':  {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'chat.sqlite3'},
-    'media_db': {'ENGINE': 'django.db.backends.sqlite3', 'NAME': BASE_DIR / 'media.sqlite3'},
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'users.sqlite3'}",
+        env='DATABASE_URL',
+        conn_max_age=600,
+    ),
+    'chat_db': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'chat.sqlite3'}",
+        env='CHAT_DATABASE_URL',
+        conn_max_age=600,
+    ),
+    'media_db': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'media.sqlite3'}",
+        env='MEDIA_DATABASE_URL',
+        conn_max_age=600,
+    ),
 }
 
 DATABASE_ROUTERS = ['dateme.routers.AppRouter']
@@ -53,6 +79,12 @@ LOGOUT_REDIRECT_URL = '/accounts/login/'
 LOGIN_URL = '/accounts/login/'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Manila'
 USE_I18N = True
@@ -64,9 +96,9 @@ EMAIL_BACKEND       = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST          = 'smtp.gmail.com'
 EMAIL_PORT          = 587
 EMAIL_USE_TLS       = True
-EMAIL_HOST_USER     = 'your_email_for_password_reset@gmail.com'
-EMAIL_HOST_PASSWORD = 'api=your_app_password_here'  # Use an app password for Gmail     
-DEFAULT_FROM_EMAIL  = 'DateMe <your_email_for_password_reset@gmail.com>'
+EMAIL_HOST_USER     = os.environ.get('DATEME_EMAIL', '')
+EMAIL_HOST_PASSWORD = os.environ.get('DATEME_EMAIL_PASSWORD', '')
+DEFAULT_FROM_EMAIL  = f'DateMe <{EMAIL_HOST_USER}>'
 
 # Reset link expires after 24 hours
 PASSWORD_RESET_TIMEOUT = 86400
