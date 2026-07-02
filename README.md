@@ -1,5 +1,3 @@
-#-------- updating in progress.. --------
-
 # 💘 DATEME — Django Dating App
 
 > A Tinder-style dating web app built with Django — swipe, match, and chat in real time.
@@ -62,7 +60,12 @@ All users, profiles, and data are fictional and for demonstration purposes only.
 | **Python 3.11+** | Core language |
 | **Django 4.2+** | Web framework (MVT pattern), ORM, session auth |
 | **Pillow** | CAPTCHA image generation; profile photo processing |
-| **SQLite** | 3 separate databases (users, chat, media) |
+| **PostgreSQL (Neon)** | Production database — 3 separate databases (users, chat, media) |
+| **SQLite** | Local development fallback only (used automatically when no `DATABASE_URL` is set) |
+| **dj-database-url** | Parses `DATABASE_URL`-style connection strings into Django settings |
+| **psycopg2-binary** | PostgreSQL driver |
+| **python-dotenv** | Loads `.env` file for local development |
+| **whitenoise** | Serves static files in production (Vercel) |
 
 ### Frontend / UI
 
@@ -73,15 +76,23 @@ All users, profiles, and data are fictional and for demonstration purposes only.
 | **Custom CSS** | Dark space-theme, card-stack layout, swipe indicators |
 | **Bootstrap 5** | Base grid, navbar, utility classes |
 
+### Hosting / Infrastructure
+
+| Tool | Purpose |
+|---|---|
+| **Vercel** | Serverless hosting — auto-deploys on every push to `main` |
+| **Neon** | Managed PostgreSQL, free tier, one project holding all 3 databases |
+| **Gmail SMTP** | Sends password-reset emails |
+
 ### Database Architecture
 
-Uses **3 separate SQLite databases** routed via a custom `AppRouter` in `settings.py`:
+Uses **3 separate databases** routed via a custom `AppRouter` in `settings.py`. In production these are 3 Postgres databases on Neon; locally they fall back to SQLite files automatically if no Postgres URL is configured:
 
-| File | Used by |
-|---|---|
-| `users.sqlite3` | `accounts`, `profiles`, `matching` apps |
-| `chat.sqlite3` | `chat` app (messages) |
-| `media.sqlite3` | Profile images stored as binary blobs |
+| Database | Env variable | Used by |
+|---|---|---|
+| `dateme_users` (`users.sqlite3` locally) | `DATABASE_URL` | `accounts`, `profiles`, `matching` apps, sessions, admin, auth |
+| `dateme_chat` (`chat.sqlite3` locally) | `CHAT_DATABASE_URL` | `chat` app (messages) |
+| `dateme_media` (`media.sqlite3` locally) | `MEDIA_DATABASE_URL` | Profile photos |
 
 ---
 
@@ -343,7 +354,7 @@ def captcha_image(request):
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Local Development)
 
 ### 1. Clone the repo
 ```bash
@@ -367,26 +378,32 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Run all migrations
+### 4. Set up your environment variables
 ```bash
-python manage.py makemigrations accounts profiles matching chat
-python manage.py migrate
+# Copy the template and fill in your own values
+cp .env.example .env
+```
+Edit `.env` and set at minimum `DATEME_EMAIL` and `DATEME_EMAIL_PASSWORD` (a Gmail App Password — see [Get an App Password](https://myaccount.google.com/apppasswords)). Leave `DATABASE_URL`, `CHAT_DATABASE_URL`, and `MEDIA_DATABASE_URL` blank for local dev — the app automatically falls back to local SQLite files when those aren't set.
+
+### 5. Run all migrations
+```bash
+python manage.py migrate --database=default
 python manage.py migrate --database=chat_db
 python manage.py migrate --database=media_db
 ```
 
-### 5. Load dummy data (recommended for demo)
+### 6. Load dummy data (recommended for demo)
 ```bash
 python manage.py loaddata fixtures.json
 python manage.py loaddata chat_fixtures.json --database=chat_db
 ```
 
-### 6. Create a superuser
+### 7. Create a superuser
 ```bash
 python manage.py createsuperuser
 ```
 
-### 7. Start the server
+### 8. Start the server
 ```bash
 python manage.py runserver
 ```
@@ -458,21 +475,74 @@ DATEME/
 ├── fixtures.json      # Dummy user/profile/match data
 ├── chat_fixtures.json # Dummy chat messages
 ├── manage.py
-└── requirements.txt
+├── requirements.txt
+├── .env.example       # Template for environment variables (safe to commit)
+└── .env                # Real secrets — gitignored, never committed
 ```
 
 ---
 
-## 🔒 Security Notes (Before Deploying)
+## ☁️ Deployment (Vercel + Neon)
 
-> ⚠️ The current `settings.py` uses a **hardcoded secret key** and `DEBUG = True`.
+The app is deployed serverlessly on **Vercel**, backed by 3 **Neon** (managed Postgres) databases. Vercel's serverless filesystem can't persist SQLite writes, so production always uses Postgres — locally, SQLite is still used automatically as a fallback.
 
-1. Replace `SECRET_KEY` with a real secret (use `python -c "import secrets; print(secrets.token_hex())"`)
-2. Set `DEBUG = False`
-3. Update `ALLOWED_HOSTS` to your actual domain
-4. Replace SQLite with PostgreSQL for production workloads
-5. Configure media file storage (e.g. AWS S3) instead of binary DB blobs
-6. Add rate limiting to the swipe and chat poll endpoints
+### 1. Create the Neon databases
+
+1. Sign up at [neon.tech](https://neon.tech), create one project
+2. In the **SQL Editor**, run:
+   ```sql
+   CREATE DATABASE dateme_users;
+   CREATE DATABASE dateme_chat;
+   CREATE DATABASE dateme_media;
+   ```
+3. Grab the connection string for each database from the **Connect** panel (switch the database dropdown for each one)
+
+### 2. Run migrations against Neon
+
+Fill in `DATABASE_URL`, `CHAT_DATABASE_URL`, `MEDIA_DATABASE_URL` in your local `.env` with the 3 Neon strings, then:
+```bash
+python manage.py migrate --database=default
+python manage.py migrate --database=chat_db
+python manage.py migrate --database=media_db
+python manage.py loaddata fixtures.json
+python manage.py loaddata chat_fixtures.json --database=chat_db
+```
+
+### 3. Deploy to Vercel
+
+1. Go to [vercel.com](https://vercel.com) → **Add New → Project** → import this repo
+2. Vercel auto-detects the Django preset — leave build settings as-is
+3. Add these **Environment Variables** (Production and Preview):
+
+| Variable | Value |
+|---|---|
+| `SECRET_KEY` | a fresh random string — generate with `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"` |
+| `DEBUG` | `False` |
+| `ALLOWED_HOSTS` | `.vercel.app` |
+| `DATABASE_URL` | Neon `dateme_users` connection string |
+| `CHAT_DATABASE_URL` | Neon `dateme_chat` connection string |
+| `MEDIA_DATABASE_URL` | Neon `dateme_media` connection string |
+| `DATEME_EMAIL` | your Gmail address |
+| `DATEME_EMAIL_PASSWORD` | your Gmail App Password |
+
+4. Click **Deploy**
+
+Every subsequent `git push origin main` auto-triggers a redeploy.
+
+### Where secrets live (and don't)
+
+| Location | Has real secrets? |
+|---|---|
+| GitHub repo / `settings.py` | ❌ No — reads everything from env vars |
+| `.env` (local machine) | ✅ Yes — gitignored, never committed |
+| `.env.example` (committed) | ❌ No — placeholders only |
+| Vercel → Settings → Environment Variables | ✅ Yes — this is the only place production secrets live |
+
+### Before deploying, double check:
+1. `DEBUG = False` and `ALLOWED_HOSTS` set to your real domain in Vercel's env vars (not `*`/`True`, which are dev-only defaults)
+2. `SECRET_KEY` used in production is different from your local dev key
+3. Media files: profile photos are stored as binary blobs in `dateme_media` — fine for a demo/hobby scale, but consider object storage (e.g. S3) if this grows
+4. Add rate limiting to the swipe and chat poll endpoints before any real public launch
 
 ---
 
