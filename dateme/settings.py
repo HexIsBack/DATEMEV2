@@ -65,7 +65,7 @@ EMAIL_HOST          = 'smtp.gmail.com'
 EMAIL_PORT          = 587
 EMAIL_USE_TLS       = True
 EMAIL_HOST_USER     = 'your_email_for_password_reset@gmail.com'
-EMAIL_HOST_PASSWORD = 'appkey-from-google-app-passwords'
+EMAIL_HOST_PASSWORD = 'api=your_app_password_here'  # Use an app password for Gmail     
 DEFAULT_FROM_EMAIL  = 'DateMe <your_email_for_password_reset@gmail.com>'
 
 # Reset link expires after 24 hours
