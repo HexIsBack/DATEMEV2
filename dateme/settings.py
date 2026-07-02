@@ -17,8 +17,26 @@ SECRET_KEY = os.environ.get(
     'SECRET_KEY',
     'django-insecure-dev-only-key-do-not-use-in-production',
 )
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+# Defaults to False (fail-safe) — if the DEBUG env var is ever missing or
+# misspelled, the app stays locked down instead of silently exposing
+# stack traces. For local dev, set DEBUG=True explicitly in your .env.
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
+
+# Tells Django to trust the "X-Forwarded-Proto" header Vercel's proxy sets,
+# so Django knows the original request was HTTPS even though it's forwarded
+# internally as plain HTTP. Needed for correct CSRF/cookie behavior behind
+# any reverse proxy (Vercel, Render, Railway, etc.).
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Required by Django 4+ when running behind a proxy: without this, POST
+# forms (login, password reset, chat, swipe actions) can fail with
+# "CSRF verification failed" once DEBUG=False in production.
+CSRF_TRUSTED_ORIGINS = [
+    f"https://*{host}" if host.startswith('.') else f"https://{host}"
+    for host in ALLOWED_HOSTS
+    if host not in ('*', '')
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
